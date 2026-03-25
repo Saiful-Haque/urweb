@@ -1,0 +1,11 @@
+New Contact Inquiry from URWEB
+
+Name: {{ name }}
+Email: {{ email }}
+Subject: {{ subject }}
+
+Message:
+{{ message }}
+
+---
+This inquiry was captured at {{ timestamp }} and is stored in the database.

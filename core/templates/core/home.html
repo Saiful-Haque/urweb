@@ -1,0 +1,180 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+        <!-- Hero Section -->
+        <section class="hero container">
+            <div class="hero-content">
+                <span class="badge">🚀 NEW: NEXT-GEN DESIGN SOLUTIONS</span>
+                <h1 class="hero-title">
+                    We Build Powerful Websites That <span class="text-gradient">Grow Your Business</span>
+                </h1>
+                <h2 class="hero-subtitle">
+                    Custom websites, fast performance, and scalable digital solutions tailored for ambitious brands.
+                </h2>
+                <div class="hero-actions">
+                    <a href="{% url 'core:contact' %}" class="btn btn-primary btn-large">Get a Project</a>
+                    <a href="#portfolio" class="btn btn-secondary btn-large">View Portfolio</a>
+                </div>
+                <div class="trust-badge">
+                    <p>TRUSTED BY INDUSTRY LEADERS</p>
+                    <div class="trust-logos">
+                        <span>BOLT</span>
+                        <span>NEXUS</span>
+                        <span>VOYAGER</span>
+                        <span>AURORA</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="services container section-padding">
+            <div class="section-header">
+                <span class="section-tag">OUR EXPERTISE</span>
+                <h2 class="section-title">Comprehensive digital solutions tailored to your needs.</h2>
+            </div>
+            <div class="services-grid">
+                {% for service in services %}
+                <div class="service-card">
+                    <div class="service-icon"><i data-lucide="{{ service.icon_name }}"></i></div>
+                    <h3>{{ service.title }}</h3>
+                    <p>{{ service.description }}</p>
+                </div>
+                {% endfor %}
+                <div class="service-card cta-card">
+                    <h3>Have a special project in mind?</h3>
+                    <p>Let's build something unique together.</p>
+                    <a href="{% url 'core:contact' %}" class="btn-link">Start a discussion <i data-lucide="arrow-right"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Choose Us -->
+        <section class="features bg-light section-padding">
+            <div class="container">
+                <div class="section-header center">
+                    <h2 class="section-title">Why Choose Us</h2>
+                    <p>We focus on the metrics that matter for your growth.</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-img-placeholder"></div>
+                        <h4>Fast</h4>
+                        <p>Blazing fast performance that reduces bounce rates and improves SEO.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-img-placeholder"></div>
+                        <h4>SEO</h4>
+                        <p>Fully SEO-optimized architecture to help you rank higher on search engines.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-img-placeholder"></div>
+                        <h4>Secure</h4>
+                        <p>Enterprise-grade security and data protection for your business assets.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-img-placeholder"></div>
+                        <h4>Mobile-First</h4>
+                        <p>Perfect browsing experience on every screen size, from mobile to desktop.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Process Section -->
+        <section id="process" class="process container section-padding">
+            <div class="section-header center">
+                <h2 class="section-title">Our Streamlined Process</h2>
+                <p>We take your idea from concept to reality in five simple steps.</p>
+            </div>
+            <div class="process-steps">
+                <div class="step">
+                    <div class="step-icon"><i data-lucide="message-square"></i></div>
+                    <h4>Consultation</h4>
+                    <p>Defining goals and project scope.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon"><i data-lucide="palette"></i></div>
+                    <h4>Design</h4>
+                    <p>Visual prototyping and UI/UX design.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon"><i data-lucide="code"></i></div>
+                    <h4>Development</h4>
+                    <p>Clean coding and implementation.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon"><i data-lucide="check-circle"></i></div>
+                    <h4>Testing</h4>
+                    <p>Rigorous quality assurance.</p>
+                </div>
+                <div class="step">
+                    <div class="step-icon"><i data-lucide="rocket"></i></div>
+                    <h4>Launch</h4>
+                    <p>Go-live and performance monitoring.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="portfolio" class="projects bg-dark section-padding">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title text-white">Featured Projects</h2>
+                    <a href="#" class="btn-link text-primary">View All <i data-lucide="arrow-right"></i></a>
+                </div>
+                <div class="projects-grid">
+                    {% for project in projects %}
+                    <div class="project-card">
+                        <div class="project-img-placeholder {{ project.image_style }}"></div>
+                        <div class="project-info">
+                            <span class="project-cat">{{ project.category|upper }}</span>
+                            <h4>{{ project.title }}</h4>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section id="testimonials" class="testimonials container section-padding">
+            <div class="section-header center">
+                <h2 class="section-title">What Our Clients Say</h2>
+                <div class="stars">
+                    <i data-lucide="star" fill="currentColor"></i>
+                    <i data-lucide="star" fill="currentColor"></i>
+                    <i data-lucide="star" fill="currentColor"></i>
+                    <i data-lucide="star" fill="currentColor"></i>
+                    <i data-lucide="star" fill="currentColor"></i>
+                </div>
+            </div>
+            <div class="testimonials-grid">
+                {% for testimonial in testimonials %}
+                <div class="testimonial-card">
+                    <div class="client-info">
+                        <div class="client-avatar">{{ testimonial.avatar_initials }}</div>
+                        <div>
+                            <h5>{{ testimonial.client_name }}</h5>
+                            <span>{{ testimonial.client_title }}</span>
+                        </div>
+                    </div>
+                    <p>"{{ testimonial.quote }}"</p>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Final CTA -->
+        <section class="cta section-padding bg-accent">
+            <div class="container center">
+                <h2 class="section-title">Ready to start your next project?</h2>
+                <p>Join 100+ businesses scaling their digital presence with URWEB solutions.</p>
+                <div class="cta-actions">
+                    <a href="{% url 'core:contact' %}" class="btn btn-primary btn-large">Book a Consultation</a>
+                    <a href="{% url 'core:contact' %}" class="btn btn-secondary btn-large">Contact Sales</a>
+                </div>
+            </div>
+        </section>
+{% endblock %}

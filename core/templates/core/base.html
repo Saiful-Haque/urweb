@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}URWEB | We Build Powerful Websites That Grow Your Business{% endblock %}</title>
+    <meta name="description" content="Custom websites, fast performance, and scalable digital solutions tailored for ambitious brands.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Main Style -->
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header class="header">
+        <nav class="nav container">
+            <a href="/" class="logo">
+                <span class="logo-accent">UR</span>WEB
+            </a>
+            <ul class="nav-links">
+                <li><a href="{% url 'core:home' %}#services">Services</a></li>
+                <li><a href="{% url 'core:home' %}#portfolio">Portfolio</a></li>
+                <li><a href="{% url 'core:home' %}#process">Process</a></li>
+                <li><a href="{% url 'core:home' %}#testimonials">Testimonials</a></li>
+            </ul>
+            <div class="nav-auth">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'core:dashboard' %}" class="btn btn-ghost">Dashboard</a>
+                    <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary">Logout</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-ghost">Log In</a>
+                    <a href="{% url 'core:contact' %}" class="btn btn-primary">Get Started</a>
+                {% endif %}
+            </div>
+            <button class="nav-toggle" id="nav-toggle">
+                <i data-lucide="menu"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        {% if messages %}
+            <div class="messages container" style="padding-top: 100px;">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" style="padding: 15px; border-radius: 12px; margin-bottom: 20px; background: {% if message.tags == 'success' %}#dcfce7; color: #166534;{% else %}#fee2e2; color: #991b1b;{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer section-padding">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="logo">
+                        <span class="logo-accent">UR</span>WEB
+                    </a>
+                    <p>High-performance digital products that scale. We combine creative design with cutting-edge technology.</p>
+                    <div class="social-links">
+                        <a href="#"><i data-lucide="twitter"></i></a>
+                        <a href="#"><i data-lucide="linkedin"></i></a>
+                        <a href="#"><i data-lucide="github"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h5>Services</h5>
+                    <ul>
+                        <li><a href="#">Web Development</a></li>
+                        <li><a href="#">E-Commerce</a></li>
+                        <li><a href="#">Mobile Apps</a></li>
+                        <li><a href="#">UX/UI Design</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h5>Company</h5>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Our Portfolio</a></li>
+                        <li><a href="#">Testimonials</a></li>
+                        <li><a href="#">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h5>Newsletter</h5>
+                    <p>Get the latest insights on web and business.</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Email address">
+                        <button type="submit" class="btn btn-primary">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 URWEB - Creative Website Solutions. All Rights Reserved.</p>
+                <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Settings</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Simple Mobile Nav Toggle
+        const toggle = document.getElementById('nav-toggle');
+        const nav = document.querySelector('.nav-links');
+        if (toggle) {
+            toggle.addEventListener('click', () => {
+                nav.classList.toggle('active');
+            });
+        }
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

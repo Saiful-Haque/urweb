@@ -1,0 +1,44 @@
+{% extends "core/base.html" %}
+{% block content %}
+<section class="dashboard-section" style="padding-top: 120px; min-height: 80vh;">
+    <div class="container">
+        <div class="dashboard-header" style="margin-bottom: 40px;">
+            <h1 class="section-title" style="text-align: left;">Welcome, {{ user.username }}!</h1>
+            <p>Your URWEB Client Portal Dashboard</p>
+        </div>
+
+        <div class="dashboard-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+            <!-- Projected Projects -->
+            <div class="service-card">
+                <div class="service-icon"><i data-lucide="layers"></i></div>
+                <h3>Active Projects</h3>
+                <p>Track the progress of your ongoing digital solutions.</p>
+                <span class="badge" style="background: var(--primary-color); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem;">0 Active</span>
+            </div>
+
+            <!-- Invoices -->
+            <div class="service-card">
+                <div class="service-icon"><i data-lucide="credit-card"></i></div>
+                <h3>Billing & Invoices</h3>
+                <p>View your payment history and download invoices.</p>
+                <a href="#" class="btn-link">View Billing <i data-lucide="arrow-right"></i></a>
+            </div>
+
+            <!-- Support -->
+            <div class="service-card">
+                <div class="service-icon"><i data-lucide="help-circle"></i></div>
+                <h3>Technical Support</h3>
+                <p>Open a support ticket or request modifications.</p>
+                <a href="{% url 'core:contact' %}" class="btn-link">Get Support <i data-lucide="arrow-right"></i></a>
+            </div>
+        </div>
+
+        <div class="logout-action" style="margin-top: 60px;">
+            <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-secondary">Logout from Portal</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
