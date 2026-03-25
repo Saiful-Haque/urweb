@@ -13,7 +13,6 @@ media
 
 # Static
 staticfiles/
-static/
 
 # Environment
 .env
