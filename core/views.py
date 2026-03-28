@@ -23,6 +23,18 @@ def services_view(request):
     services = Service.objects.all()
     return render(request, 'core/services.html', {'services': services})
 
+def portfolio_view(request):
+    projects = Project.objects.all()
+    categories = Project.objects.order_by('category').values_list('category', flat=True).distinct()
+    context = {
+        'projects': projects,
+        'categories': categories,
+    }
+    return render(request, 'core/portfolio.html', context)
+
+def about_view(request):
+    return render(request, 'core/about.html')
+
 def contact_view(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)

@@ -1,0 +1,173 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}About Us | URWEB{% endblock %}
+
+{% block content %}
+<!-- About Hero -->
+<section class="section-padding" style="padding-bottom: 2rem;">
+    <div class="container">
+        <!-- Hero Visual Placeholder -->
+        <div class="about-hero-visual" style="margin-bottom: 4rem;">
+            <div class="mockup-container" style="height: 400px; background: var(--bg-dark); border-radius: 24px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative;">
+                <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(26,58,61,0.8) 0%, rgba(15,23,42,0.9) 100%);"></div>
+                <div style="text-align: center; color: rgba(255,255,255,0.2); position: relative; z-index: 1;">
+                    <i data-lucide="image" style="width: 48px; height: 48px; margin-bottom: 1rem;"></i>
+                    <p>Team Collaboration Image Placeholder</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-hero-content" style="max-width: 800px; margin: 0 auto; text-align: center;">
+            <span class="tag-cat" style="display: inline-block; margin-bottom: 1rem; letter-spacing: 2px;">OUR STORY</span>
+            <h1 style="font-size: 3.5rem; margin-bottom: 1.5rem; color: var(--secondary); font-weight: 800; line-height: 1.1;">Building the Future of the Web</h1>
+            <p style="font-size: 1.1rem; color: var(--text-muted); line-height: 1.6; max-width: 600px; margin: 0 auto;">
+                At urweb, we blend innovation with performance to create digital experiences that matter. Founded on the principle that the web should be fast, accessible, and beautiful for everyone.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Mission & Vision -->
+<section class="section-padding" style="background-color: #F8FAFC;">
+    <div class="container">
+        <div class="text-center" style="margin-bottom: 4rem;">
+            <h2 style="font-size: 2rem; color: var(--secondary);">Mission & Vision</h2>
+            <div style="width: 60px; height: 3px; background: var(--primary); margin: 1rem auto 0;"></div>
+        </div>
+        
+        <div class="mission-vision-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem;">
+            <!-- Mission Card -->
+            <div class="mv-card">
+                <div class="mv-icon-wrapper">
+                    <i data-lucide="rocket"></i>
+                </div>
+                <h3>Our Mission</h3>
+                <p>To empower every business with a high-performance web presence through cutting-edge technology and human-centric design, ensuring quality is never a compromise.</p>
+            </div>
+            <!-- Vision Card -->
+            <div class="mv-card">
+                <div class="mv-icon-wrapper">
+                    <i data-lucide="eye"></i>
+                </div>
+                <h3>Our Vision</h3>
+                <p>To become the global standard for modern web architecture, where speed, accessibility, and user-experience are woven into the fabric of every digital interface.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="section-padding">
+    <div class="container">
+        <div style="margin-bottom: 4rem; max-width: 600px;">
+            <h2 style="font-size: 2rem; color: var(--secondary); margin-bottom: 1rem;">The Minds Behind urweb</h2>
+            <p style="color: var(--text-muted); font-size: 1.1rem;">A diverse group of designers, engineers, and strategists working together to redefine the web.</p>
+        </div>
+
+        <div class="team-grid">
+            <!-- Alex -->
+            <div class="team-member">
+                <div class="team-avatar" style="background: linear-gradient(to bottom, #2C3E50, #000000);"></div>
+                <h4>Alex Rivera</h4>
+                <p>Founder & CEO</p>
+            </div>
+            <!-- Sarah -->
+            <div class="team-member">
+                <div class="team-avatar" style="background: linear-gradient(to bottom, #D5D1C8, #8B8574);"></div>
+                <h4>Sarah Chen</h4>
+                <p>CTO</p>
+            </div>
+            <!-- Marcus -->
+            <div class="team-member">
+                <div class="team-avatar" style="background: linear-gradient(to bottom, #A9B5C1, #4A5568);"></div>
+                <h4>Marcus Thorne</h4>
+                <p>Design Lead</p>
+            </div>
+            <!-- Elena -->
+            <div class="team-member">
+                <div class="team-avatar" style="background: linear-gradient(to bottom, #EDC9AF, #B58A6A);"></div>
+                <h4>Elena Rodriguez</h4>
+                <p>Operations</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Tech Stack -->
+<section class="section-padding" style="background-color: #F8FAFC; border-top: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0;">
+    <div class="container text-center">
+        <span class="tag-cat" style="display: block; margin-bottom: 2rem; letter-spacing: 2px;">BUILT WITH INDUSTRY LEADING TECH</span>
+        <div class="tech-stack-row" style="display: flex; justify-content: center; gap: 4rem; flex-wrap: wrap; opacity: 0.6;">
+            <!-- Tech placeholder icons (using lucide or text for layout matching) -->
+            <div class="tech-item"><i data-lucide="code-2"></i><span style="font-size: 0.7rem; display: block; margin-top: 0.5rem; font-weight: 600;">React</span></div>
+            <div class="tech-item"><i data-lucide="file-type-2"></i><span style="font-size: 0.7rem; display: block; margin-top: 0.5rem; font-weight: 600;">TypeScript</span></div>
+            <div class="tech-item"><i data-lucide="wind"></i><span style="font-size: 0.7rem; display: block; margin-top: 0.5rem; font-weight: 600;">Tailwind</span></div>
+            <div class="tech-item"><i data-lucide="database"></i><span style="font-size: 0.7rem; display: block; margin-top: 0.5rem; font-weight: 600;">PostgreSQL</span></div>
+            <div class="tech-item"><i data-lucide="cloud"></i><span style="font-size: 0.7rem; display: block; margin-top: 0.5rem; font-weight: 600;">Vercel</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Journey Timeline -->
+<section class="section-padding" style="background-color: #F8FAFC;">
+    <div class="container">
+        <div class="text-center" style="margin-bottom: 4rem;">
+            <h2 style="font-size: 2rem; color: var(--secondary); margin-bottom: 0.5rem;">Our Journey</h2>
+            <p style="color: var(--text-muted);">How we evolved over the years.</p>
+        </div>
+
+        <div class="timeline-container">
+            <div class="timeline-line"></div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-year">2021</span>
+                    <h3>The Foundation</h3>
+                    <p>urweb was born out of a small garage in San Francisco with a team of 3 passionate developers.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-year">2022</span>
+                    <h3>Seed Funding & Growth</h3>
+                    <p>Successfully raised $2M in seed funding and expanded our team to 15 specialists worldwide.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-year">2023</span>
+                    <h3>Platform Launch</h3>
+                    <p>Launched our proprietary web-performance platform, helping 500+ clients achieve sub-second load times.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-year">Today</span>
+                    <h3>Global Scale</h3>
+                    <p>Supporting thousands of enterprises and startups in their mission to deliver the best possible web experiences.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="section-padding text-center" style="padding-bottom: 6rem;">
+    <div class="container">
+        <h2 style="font-size: 2.5rem; color: var(--secondary); margin-bottom: 1rem; font-weight: 800;">Ready to build your dream web<br>presence?</h2>
+        <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto 3rem;">Join us in shaping the future of digital architecture. Let's create something extraordinary together.</p>
+        <div class="hero-actions" style="justify-content: center; margin-bottom: 0;">
+            <a href="{% url 'core:contact' %}" class="btn btn-primary btn-large">Start Project</a>
+            <a href="{% url 'core:contact' %}" class="btn " style="background-color: #E8F4F5; color: var(--primary); font-weight: 600; padding: 1rem 2rem; border-radius: 50px;">Contact Us</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
