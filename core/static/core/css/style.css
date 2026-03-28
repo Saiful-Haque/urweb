@@ -216,6 +216,20 @@ img {
     margin-bottom: 5rem;
 }
 
+.services-hero {
+    background-color: var(--white);
+    padding-bottom: 2rem;
+}
+
+.services-hero .hero-title {
+    margin-bottom: 1.5rem;
+}
+
+.services-hero .hero-subtitle {
+    max-width: 700px;
+    margin-bottom: 2.5rem;
+}
+
 .trust-badge p {
     font-size: 0.8rem;
     font-weight: 700;
@@ -270,6 +284,10 @@ img {
     border: 1px solid #F1F5F9;
     border-radius: 24px;
     transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
 }
 
 .service-card:hover {
@@ -279,34 +297,60 @@ img {
 }
 
 .service-icon {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     background-color: var(--accent);
     color: var(--primary);
-    border-radius: 16px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.service-icon i {
+    width: 24px;
+    height: 24px;
 }
 
 .service-card h3 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
     margin-bottom: 1rem;
+    color: var(--secondary);
 }
 
 .service-card p {
     color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+    line-height: 1.6;
 }
 
 .cta-card {
-    background-color: var(--primary);
+    background: linear-gradient(135deg, var(--secondary) 0%, #1a2633 100%);
     color: var(--white);
+    border: none;
+    border-radius: 32px;
+    width: 100%;
 }
 
-.cta-card h3 { color: var(--white); }
-.cta-card p { color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem; }
-.cta-card .btn-link { color: var(--white); border-bottom: 1px solid white; }
+.cta-card-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.cta-card h2 {
+    color: var(--white);
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+}
+
+.cta-card p {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 2.5rem;
+}
 
 /* Features */
 .features-grid {

@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Professional Services | URWEB{% endblock %}
+
+{% block content %}
+<!-- Services Hero -->
+<section class="hero services-hero">
+    <div class="container">
+        <span class="badge">EXPERT WEB SOLUTIONS</span>
+        <h1 class="hero-title">Our Professional <span class="text-gradient">Services</span></h1>
+        <p class="hero-subtitle">Comprehensive web solutions tailored to grow your digital presence. From custom builds to enterprise maintenance, we've got you covered.</p>
+        <div class="hero-actions">
+            <a href="{% url 'core:contact' %}" class="btn btn-primary btn-large">View Pricing</a>
+            <a href="{% url 'core:contact' %}" class="btn btn-secondary btn-large">Free Audit</a>
+        </div>
+    </div>
+</section>
+
+<!-- Services Grid -->
+<section class="services-list section-padding">
+    <div class="container">
+        <div class="services-grid">
+            {% for service in services %}
+            <div class="service-card">
+                <div class="service-icon">
+                    <i data-lucide="{{ service.icon_name }}"></i>
+                </div>
+                <h3>{{ service.title }}</h3>
+                <p>{{ service.description }}</p>
+                <a href="{% url 'core:contact' %}" class="btn-link">Learn more <i data-lucide="arrow-right"></i></a>
+            </div>
+            {% empty %}
+            <!-- Fallback if no services in DB -->
+            <div class="service-card">
+                <div class="service-icon"><i data-lucide="code"></i></div>
+                <h3>Custom Website Development</h3>
+                <p>Tailor-made websites built with the latest technologies to ensure performance and scalability.</p>
+                <a href="#" class="btn-link">Learn more <i data-lucide="arrow-right"></i></a>
+            </div>
+            <!-- Add more placeholders if needed for initial preview -->
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Services CTA -->
+<section class="section-padding">
+    <div class="container">
+        <div class="service-card cta-card center">
+            <div class="cta-card-content">
+                <h2>Ready to start your project?</h2>
+                <p>Contact our team today for a free consultation and personalized quote. Let's build something amazing together.</p>
+                <a href="{% url 'core:contact' %}" class="btn btn-primary btn-large">Contact Us Now</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<!-- No extra CSS needed as it's now in style.css -->
+{% endblock %}

@@ -9,7 +9,7 @@ from .models import Service, Project, Testimonial
 
 # Create your views here.
 def home(request):
-    services = Service.objects.all()
+    services = Service.objects.all()[:6]  # Show only first 6 on home page
     projects = Project.objects.all()
     testimonials = Testimonial.objects.all()
     context = {
@@ -18,6 +18,10 @@ def home(request):
         'testimonials': testimonials,
     }
     return render(request, 'core/home.html', context)
+
+def services_view(request):
+    services = Service.objects.all()
+    return render(request, 'core/services.html', {'services': services})
 
 def contact_view(request):
     if request.method == 'POST':
