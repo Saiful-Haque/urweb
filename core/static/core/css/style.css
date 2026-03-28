@@ -893,6 +893,16 @@ img {
     color: var(--text-muted);
 }
 
+/* Contact Page Specifics */
+@media (max-width: 992px) {
+    .contact-split-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+.floating-whatsapp:hover {
+    transform: scale(1.1);
+}
+
 /* Footer */
 .footer {
     background-color: var(--white);

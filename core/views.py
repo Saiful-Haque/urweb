@@ -40,7 +40,13 @@ def pricing_view(request):
 
 def contact_view(request):
     if request.method == 'POST':
-        form = ContactForm(request.POST)
+        data = request.POST.copy()
+        first_name = data.get('first_name', '').strip()
+        last_name = data.get('last_name', '').strip()
+        if first_name or last_name:
+            data['name'] = f"{first_name} {last_name}".strip()
+            
+        form = ContactForm(data)
         if form.is_valid():
             contact_instance = form.save()
             
