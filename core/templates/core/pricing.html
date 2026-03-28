@@ -1,0 +1,137 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Pricing | URWEB{% endblock %}
+
+{% block content %}
+<!-- Pricing Hero -->
+<section class="section-padding text-center" style="background-color: #F8FAFC; padding-bottom: 2rem;">
+    <div class="container">
+        <h1 style="font-size: 3.5rem; margin-bottom: 1rem; color: var(--secondary); font-weight: 800; line-height: 1.1;">Simple, transparent pricing</h1>
+        <p style="font-size: 1.1rem; color: var(--text-muted); line-height: 1.6; max-width: 600px; margin: 0 auto 3rem;">
+            Choose the perfect plan for your project. From personal blogs to enterprise-scale applications.
+        </p>
+        
+        <!-- Billing Toggle -->
+        <div class="billing-toggle" style="display: flex; justify-content: center; align-items: center; gap: 1rem; font-weight: 600; font-size: 0.95rem;">
+            <span style="color: var(--secondary);">Monthly</span>
+            <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 26px;">
+                <input type="checkbox" style="opacity: 0; width: 0; height: 0;" checked>
+                <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--primary); transition: .4s; border-radius: 34px;">
+                    <span style="position: absolute; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; transform: translateX(24px);"></span>
+                </span>
+            </label>
+            <span style="color: var(--text-muted);">Yearly <span style="color: var(--primary);">(Save 20%)</span></span>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing Cards -->
+<section class="section-padding" style="background-color: #F8FAFC; padding-top: 0; padding-bottom: 5rem;">
+    <div class="container">
+        <div class="pricing-grid">
+            
+            <!-- Starter Plan -->
+            <div class="pricing-card">
+                <div class="pricing-header">
+                    <h3>Starter</h3>
+                    <div class="price">
+                        <span class="currency">$</span><span class="amount">29</span><span class="period">/month</span>
+                    </div>
+                    <p>Perfect for individuals and small side projects.</p>
+                </div>
+                <a href="{% url 'core:contact' %}" class="btn" style="width: 100%; text-align: center; margin-bottom: 2rem; background: #F1F5F9; color: var(--secondary); font-weight: 600;">Get Started</a>
+                <ul class="pricing-features">
+                    <li><i data-lucide="check-circle-2"></i> 5 Projects</li>
+                    <li><i data-lucide="check-circle-2"></i> Basic Analytics</li>
+                    <li><i data-lucide="check-circle-2"></i> Community Support</li>
+                    <li class="disabled"><i data-lucide="x-circle"></i> Custom Domains</li>
+                </ul>
+            </div>
+
+            <!-- Business Plan -->
+            <div class="pricing-card premium">
+                <div class="premium-badge">RECOMMENDED</div>
+                <div class="pricing-header">
+                    <h3>Business</h3>
+                    <div class="price">
+                        <span class="currency">$</span><span class="amount">79</span><span class="period">/month</span>
+                    </div>
+                    <p>Everything you need to scale your business.</p>
+                </div>
+                <a href="{% url 'core:contact' %}" class="btn btn-primary" style="width: 100%; text-align: center; margin-bottom: 2rem;">Choose Business</a>
+                <ul class="pricing-features">
+                    <li><i data-lucide="check-circle-2"></i> Unlimited Projects</li>
+                    <li><i data-lucide="check-circle-2"></i> Advanced Analytics</li>
+                    <li><i data-lucide="check-circle-2"></i> Priority Support</li>
+                    <li><i data-lucide="check-circle-2"></i> Custom Domains</li>
+                    <li><i data-lucide="check-circle-2"></i> Team Collaboration</li>
+                </ul>
+            </div>
+
+            <!-- Enterprise Plan -->
+            <div class="pricing-card">
+                <div class="pricing-header">
+                    <h3>Enterprise</h3>
+                    <div class="price">
+                        <span class="currency">$</span><span class="amount">199</span><span class="period">/month</span>
+                    </div>
+                    <p>Custom features and dedicated infrastructure.</p>
+                </div>
+                <a href="{% url 'core:contact' %}" class="btn btn-outline" style="width: 100%; text-align: center; margin-bottom: 2rem; border-color: #E2E8F0; color: var(--secondary); font-weight: 600;">Contact Sales</a>
+                <ul class="pricing-features">
+                    <li><i data-lucide="check-circle-2"></i> Everything in <strong>Business</strong></li>
+                    <li><i data-lucide="check-circle-2"></i> SLA Guarantee</li>
+                    <li><i data-lucide="check-circle-2"></i> Dedicated Manager</li>
+                    <li><i data-lucide="check-circle-2"></i> Custom Integrations</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="section-padding">
+    <div class="container" style="max-width: 800px;">
+        <div class="text-center" style="margin-bottom: 3rem;">
+            <h2 style="font-size: 2rem; color: var(--secondary);">Frequently Asked Questions</h2>
+        </div>
+        
+        <div class="faq-list">
+            <details class="faq-item">
+                <summary>Can I change plans later? <i data-lucide="chevron-down" class="faq-icon"></i></summary>
+                <div class="faq-content">
+                    <p>Yes, you can easily upgrade or downgrade your plan at any time from your account settings. Prorated charges will apply automatically.</p>
+                </div>
+            </details>
+            <details class="faq-item">
+                <summary>What payment methods do you accept? <i data-lucide="chevron-down" class="faq-icon"></i></summary>
+                <div class="faq-content">
+                    <p>We accept all major credit cards including Visa, Mastercard, and American Express, as well as PayPal and wire transfers for annual enterprise plans.</p>
+                </div>
+            </details>
+            <details class="faq-item">
+                <summary>Is there a free trial? <i data-lucide="chevron-down" class="faq-icon"></i></summary>
+                <div class="faq-content">
+                    <p>Every paid plan comes with a 14-day risk-free trial. You won't be charged if you cancel before the trial period ends.</p>
+                </div>
+            </details>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="section-padding" style="padding-bottom: 6rem; padding-top: 2rem;">
+    <div class="container">
+        <div class="cta-block" style="background-color: var(--secondary); border-radius: 24px; padding: 5rem 2rem; text-align: center;">
+            <h2 style="font-size: 2.5rem; color: var(--white); margin-bottom: 1rem; font-weight: 800;">Ready to build your dream web?</h2>
+            <p style="color: rgba(255,255,255,0.7); font-size: 1.1rem; max-width: 600px; margin: 0 auto 3rem;">Join over 10,000+ businesses growing with urweb.</p>
+            <div class="hero-actions" style="justify-content: center; margin-bottom: 0;">
+                <a href="{% url 'core:contact' %}" class="btn btn-primary btn-large">Start your free trial</a>
+                <a href="{% url 'core:contact' %}" class="btn " style="background-color: rgba(255,255,255,0.1); color: var(--white); font-weight: 600; padding: 1rem 2rem; border-radius: 50px; border: 1px solid rgba(255,255,255,0.2);">Book a demo</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

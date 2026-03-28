@@ -35,6 +35,9 @@ def portfolio_view(request):
 def about_view(request):
     return render(request, 'core/about.html')
 
+def pricing_view(request):
+    return render(request, 'core/pricing.html')
+
 def contact_view(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
