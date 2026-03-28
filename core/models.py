@@ -34,7 +34,10 @@ class Service(models.Model):
 
 class Project(models.Model):
     title = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True, blank=True)
     category = models.CharField(max_length=100)
+    technologies = models.CharField(max_length=200, blank=True, help_text="e.g., 'React • Node.js'")
+    description = models.TextField(blank=True)
     image_style = models.CharField(max_length=50, choices=[('dark', 'Dark'), ('light', 'Light'), ('accent', 'Accent')], default='accent')
     link = models.CharField(max_length=200, default="#")
     order = models.PositiveIntegerField(default=0)

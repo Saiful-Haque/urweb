@@ -1,0 +1,102 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Our Portfolio | URWEB{% endblock %}
+
+{% block content %}
+<!-- Portfolio Hero -->
+<section class="hero portfolio-hero">
+    <div class="container">
+        <h1 class="hero-title">Our <span class="text-gradient">Portfolio</span></h1>
+        <p class="hero-subtitle">A showcase of high-performance websites and digital experiences built for the modern web.</p>
+        
+        <!-- Category Filter -->
+        <div class="portfolio-filters">
+            <button class="filter-btn active" data-filter="all">All Projects</button>
+            {% for category in categories %}
+            <button class="filter-btn" data-filter="{{ category|slugify }}">{{ category }}</button>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Portfolio Grid -->
+<section class="portfolio-list section-padding" style="padding-top: 2rem;">
+    <div class="container">
+        <div class="portfolio-grid" id="portfolio-grid">
+            {% for project in projects %}
+            <div class="portfolio-item" data-category="{{ project.category|slugify }}">
+                <div class="project-card-new">
+                    <div class="project-visual {{ project.image_style }}">
+                        <!-- Mockup Placeholder -->
+                        <div class="mockup-container">
+                            <div class="mockup-screen"></div>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <div class="project-tags">
+                            <span class="tag-cat">{{ project.category|upper }}</span>
+                            <span class="tag-tech">{{ project.technologies|upper }}</span>
+                        </div>
+                        <h3>{{ project.title }}</h3>
+                        <p>{{ project.description }}</p>
+                        <a href="{{ project.link }}" class="btn-link">Visit website <i data-lucide="arrow-up-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="center" style="grid-column: 1/-1; padding: 5rem;">
+                <p>No projects to display yet. Check back soon!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Portfolio CTA -->
+<section class="section-padding">
+    <div class="container">
+        <div class="service-card cta-card center" style="background: var(--bg-dark); border: 1px solid rgba(255,255,255,0.05);">
+            <div class="cta-card-content">
+                <h2 style="font-size: 3.5rem;">Ready to build your next project?</h2>
+                <p>Let's turn your vision into a digital reality with our expert team of designers and engineers.</p>
+                <div class="hero-actions" style="margin-bottom: 0;">
+                    <a href="{% url 'core:contact' %}" class="btn btn-primary btn-large">Start a Conversation</a>
+                    <a href="{% url 'core:services' %}" class="btn btn-secondary btn-large" style="background: transparent; color: white; border-color: rgba(255,255,255,0.2);">View Services</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<!-- Portfolio styles are now in style.css -->
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const portfolioItems = document.querySelectorAll('.portfolio-item');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active button
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.getAttribute('data-filter');
+
+                portfolioItems.forEach(item => {
+                    if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}
