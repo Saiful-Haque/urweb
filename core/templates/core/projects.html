@@ -7,6 +7,23 @@
 {% endblock %}
 
 {% block admin_content %}
+
+<!-- Toast Messages -->
+{% if messages %}
+<div id="toast-container" style="position: fixed; top: 24px; right: 32px; z-index: 10000; display: flex; flex-direction: column; gap: 10px;">
+    {% for msg in messages %}
+    <div style="
+        background: {% if 'success' in msg.tags %}#ECFDF5; border-left: 4px solid #10B981; color: #065F46;
+        {% else %}#FEF2F2; border-left: 4px solid #EF4444; color: #991B1B;{% endif %}
+        padding: 14px 20px; border-radius: 10px; font-weight: 600; font-size: 0.9rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1); min-width: 280px;
+        animation: slideInRight 0.3s ease;">{{ msg }}</div>
+    {% endfor %}
+</div>
+<style>@keyframes slideInRight { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }</style>
+<script>setTimeout(() => { const c = document.getElementById('toast-container'); if (c) c.style.transition = '0.4s', c.style.opacity = '0', setTimeout(() => c.remove(), 400); }, 3500);</script>
+{% endif %}
+
 <div class="content-header">
     <h1 style="font-size: 1.8rem; margin: 0 0 8px 0; font-weight: 800;">Projects</h1>
     <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">Manage and track your ethereal digital transformations.</p>
@@ -18,50 +35,24 @@
     <div class="metric-card" style="padding: 24px 30px; position: relative; overflow: hidden;">
         <i data-lucide="clipboard-list" style="position: absolute; right: -20px; bottom: -20px; width: 120px; height: 120px; color: #F1F5F9; z-index: 0;"></i>
         <div style="position: relative; z-index: 1;">
-            <div class="metric-label" style="font-weight: 600; color: #64748B; margin-bottom: 8px;">Ongoing Projects</div>
-            <div class="metric-value" style="font-size: 3rem; color: #0D9488; font-weight: 800; line-height: 1; margin-bottom: 16px;">42</div>
+            <div class="metric-label" style="font-weight: 600; color: #64748B; margin-bottom: 8px;">Total Projects</div>
+            <div class="metric-value" style="font-size: 3rem; color: #0D9488; font-weight: 800; line-height: 1; margin-bottom: 16px;">{{ projects.count }}</div>
             <div style="display: inline-flex; align-items: center; gap: 6px; background: #ECFDF5; color: #059669; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">
-                <i data-lucide="trending-up" style="width: 14px; height: 14px;"></i> +12% vs last month
+                <i data-lucide="trending-up" style="width: 14px; height: 14px;"></i> Active Management
             </div>
         </div>
     </div>
     
-    <!-- Completed This Year -->
-    <div class="metric-card" style="padding: 24px 30px; position: relative; overflow: hidden;">
-        <i data-lucide="check-circle" style="position: absolute; right: -20px; bottom: -20px; width: 120px; height: 120px; color: #F1F5F9; z-index: 0;"></i>
-        <div style="position: relative; z-index: 1;">
-            <div class="metric-label" style="font-weight: 600; color: #64748B; margin-bottom: 8px;">Completed This Year</div>
-            <div class="metric-value" style="font-size: 3rem; font-weight: 800; line-height: 1; margin-bottom: 16px;">156</div>
-            <div style="display: inline-flex; align-items: center; gap: 6px; background: #F8FAFC; color: #94A3B8; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">
-                <i data-lucide="calendar" style="width: 14px; height: 14px;"></i> Target: 200
-            </div>
-        </div>
-    </div>
-
     <!-- Strategic Pulse -->
-    <div class="metric-card" style="padding: 24px 30px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div class="metric-card" style="padding: 24px 30px; display: flex; flex-direction: column; justify-content: space-between; grid-column: span 2;">
         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div class="metric-label" style="font-weight: 700; font-style: italic; color: #0F766E;">Strategic Pulse</div>
+            <div class="metric-label" style="font-weight: 700; font-style: italic; color: #0F766E;">Strategic Overview</div>
             <div style="background: #E2E8F0; padding: 8px; border-radius: 8px; color: #94A3B8;"><i data-lucide="bar-chart-3"></i></div>
         </div>
-        <div>
-            <div class="metric-label" style="font-size: 0.75rem; color: #94A3B8; margin-bottom: 4px;">Efficiency Rate</div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div class="metric-value" style="font-size: 2.5rem; font-weight: 800; line-height: 1;">94.8%</div>
-                <i data-lucide="zap" style="color: #10B981; fill: #10B981; width: 24px; height: 24px;"></i>
-            </div>
+        <div style="padding-top: 20px;">
+            <p style="color: #64748B; margin: 0; font-size: 0.9rem;">Maintain peak efficiency across all client deliverables and internal developmental milestones.</p>
         </div>
     </div>
-</div>
-
-<!-- Filter Bar -->
-<div class="dashboard-panel" style="padding: 12px 24px; border-radius: 12px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
-    <div style="display: flex; gap: 24px;">
-        <a href="#" style="color: #0F766E; font-weight: 700; text-decoration: none; padding: 6px 16px; background: #E8F4F5; border-radius: 20px; font-size: 0.9rem;">All Projects</a>
-        <a href="#" style="color: #94A3B8; font-weight: 600; text-decoration: none; padding: 6px 8px; font-size: 0.9rem;">Internal</a>
-        <a href="#" style="color: #94A3B8; font-weight: 600; text-decoration: none; padding: 6px 8px; font-size: 0.9rem;">Archived</a>
-    </div>
-    <button style="background: none; border: none; color: #94A3B8; cursor: pointer;"><i data-lucide="filter"></i></button>
 </div>
 
 <!-- Projects Table -->
@@ -73,53 +64,45 @@
                     <th style="padding: 24px; padding-bottom: 24px;">PROJECT NAME</th>
                     <th style="padding-bottom: 24px;">CLIENT</th>
                     <th style="padding-bottom: 24px;">TIMELINE / PROGRESS</th>
-                    <th style="padding-bottom: 24px;">TEAM</th>
                     <th style="padding-bottom: 24px;">STATUS</th>
                     <th style="padding-bottom: 24px;">HEALTH</th>
-                    <th></th>
+                    <th style="padding-bottom: 24px; text-align: right; padding-right: 24px;">ACTIONS</th>
                 </tr>
             </thead>
             <tbody>
                 {% for project in projects %}
-                <tr>
+                <tr style="border-top: 1px solid #F1F5F9;">
                     <td style="padding-left: 24px; width: 25%;">
                         <div class="client-info">
-                            <span class="client-name" style="font-size: 0.95rem; font-weight: 700;">{{ project.title }}</span>
+                            <span class="client-name" style="font-size: 0.95rem; font-weight: 700; color: #1E293B;">{{ project.title }}</span>
                             <span class="client-sub" style="color: #94A3B8; font-size: 0.75rem;">ID: {{ project.project_id|default:"PRJ-0000" }}</span>
                         </div>
                     </td>
                     <td>
                         {% if project.client %}
-                        <div class="client-cell">
-                            <div class="client-logo" style="width: 28px; height: 28px; background: #F1F5F9; color: #475569; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-weight: 700;">
-                                {{ project.client.name|make_list|first|upper }}
+                        <div class="client-cell" style="display: flex; align-items: center; gap: 8px;">
+                            <div class="client-logo" style="width: 28px; height: 28px; background: {{ project.client.logo_color|default:'#F1F5F9' }}; color: {% if project.client.logo_color %}white{% else %}#475569{% endif %}; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-weight: 700;">
+                                {{ project.client.name|slice:":1"|upper }}
                             </div>
-                            <span style="font-weight: 600; font-size: 0.9rem;">{{ project.client.name }}</span>
+                            <span style="font-weight: 600; font-size: 0.9rem; color: #1E293B;">{{ project.client.name }}</span>
                         </div>
                         {% else %}
-                        <span style="color: #94A3B8; font-style: italic;">Internal</span>
+                        <span style="color: #94A3B8; font-style: italic; font-size: 0.9rem;">Internal</span>
                         {% endif %}
                     </td>
                     <td style="width: 25%;">
-                        <div class="completion-cell" style="width: 80%;">
+                        <div class="completion-cell" style="width: 90%;">
                             <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.7rem; font-weight: 700; color: #64748B;">
                                 <span>{{ project.progress }}% Complete</span>
-                                <span style="color: #94A3B8;">{% if project.deadline %}{{ project.deadline|date:"M d" }} Deadline{% else %}No Deadline{% endif %}</span>
+                                <span style="color: #94A3B8;">{% if project.deadline %}{{ project.deadline|date:"M d" }}{% else %}No date{% endif %}</span>
                             </div>
-                            <div class="progress-bar-container" style="width: 100%; height: 6px; background: #F1F5F9;">
+                            <div class="progress-bar-container" style="width: 100%; height: 6px; background: #F1F5F9; border-radius: 10px; overflow: hidden;">
                                 <div class="progress-bar" style="width: {{ project.progress }}%; background: #0F766E;"></div>
                             </div>
                         </div>
                     </td>
                     <td>
-                        <div style="display: flex; align-items: center;">
-                            <img src="https://i.pravatar.cc/150?u={{ project.id }}1" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; margin-right: -10px; position:relative; z-index:3;">
-                            <img src="https://i.pravatar.cc/150?u={{ project.id }}2" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; margin-right: -10px; position:relative; z-index:2;">
-                            <div style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; background: #F1F5F9; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700; color: #64748B; position:relative; z-index:1;">+2</div>
-                        </div>
-                    </td>
-                    <td>
-                        <span style="background: #E8F4F5; color: #0F766E; font-size: 0.7rem; font-weight: 700; padding: 6px 12px; border-radius: 20px;">{{ project.status }}</span>
+                        <span style="background: #E8F4F5; color: #0F766E; font-size: 0.7rem; font-weight: 800; padding: 6px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;">{{ project.status }}</span>
                     </td>
                     <td>
                         {% if project.health == 'Green' %}
@@ -131,43 +114,41 @@
                         {% endif %}
                     </td>
                     <td style="text-align: right; padding-right: 24px;">
-                        <button style="background: none; border: none; color: #CBD5E1; cursor: pointer;"><i data-lucide="more-vertical"></i></button>
+                        <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                            <button onclick="openEditProjectModal({{ project.pk }}, '{{ project.title|escapejs }}', '{{ project.client.pk|default:'' }}', '{{ project.status|escapejs }}', '{{ project.progress }}', '{{ project.deadline|date:'Y-m-d' }}', '{{ project.health|escapejs }}')"
+                                style="background: #EFF6FF; border: none; color: #2563EB; border-radius: 8px; padding: 7px 14px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                                <i data-lucide="pencil" style="width: 14px; height: 14px;"></i> Edit
+                            </button>
+                            <button onclick="confirmDeleteProject({{ project.pk }}, '{{ project.title|escapejs }}')"
+                                style="background: #FEF2F2; border: none; color: #EF4444; border-radius: 8px; padding: 7px 14px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Delete
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="7" style="text-align: center; padding: 40px; color: #94A3B8;">No projects tracked yet. Click "+ New Project" to begin.</td>
+                    <td colspan="6" style="text-align: center; padding: 60px 40px; color: #94A3B8;">
+                         <i data-lucide="folder-kanban" style="width: 40px; height: 40px; display: block; margin: 0 auto 12px; opacity: 0.5;"></i>
+                         No projects tracked yet. Click "+ New Project" to begin.
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        
-        <!-- Table Footer Pagination -->
-        <div style="padding: 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #64748B; font-size: 0.85rem; font-weight: 500;">Showing {{ projects.count }} ongoing projects</span>
-            <div style="display: flex; gap: 8px; align-items: center;">
-                <button style="width: 30px; height: 30px; border-radius: 8px; border: 1px solid #E2E8F0; background: white; color: #94A3B8; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i></button>
-                <button style="width: 30px; height: 30px; border-radius: 8px; border: 1px solid #E2E8F0; background: white; color: #94A3B8; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i></button>
-            </div>
-        </div>
     </div>
 </div>
 
-<!-- SaaS Footer -->
-<div style="display: flex; justify-content: space-between; align-items: center; padding: 40px 0 20px 0;">
-    <span style="font-size: 0.85rem; color: #94A3B8;">&copy; 2024 urweb. All rights reserved.</span>
-    <div style="display: flex; gap: 24px;">
-        <a href="#" style="font-size: 0.85rem; color: #94A3B8; text-decoration: none;">Privacy Policy</a>
-        <a href="#" style="font-size: 0.85rem; color: #94A3B8; text-decoration: none;">Terms of Service</a>
-        <a href="#" style="font-size: 0.85rem; color: #94A3B8; text-decoration: none;">Support</a>
-    </div>
-</div>
-
-<!-- Add Project Modal -->
+<!-- ═══════ ADD PROJECT MODAL ═══════ -->
 <dialog id="addProjectModal" class="admin-modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2>Track New Project</h2>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 36px; height: 36px; background: #EFF6FF; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #2563EB;">
+                    <i data-lucide="plus-circle" style="width: 18px; height: 18px;"></i>
+                </div>
+                <h2>Track New Project</h2>
+            </div>
             <button onclick="document.getElementById('addProjectModal').close()"><i data-lucide="x"></i></button>
         </div>
         <form action="{% url 'core:add_project' %}" method="POST">
@@ -183,4 +164,97 @@
     </div>
 </dialog>
 
+<!-- ═══════ EDIT PROJECT MODAL ═══════ -->
+<dialog id="editProjectModal" class="admin-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 36px; height: 36px; background: #EFF6FF; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #2563EB;">
+                    <i data-lucide="pencil" style="width: 18px; height: 18px;"></i>
+                </div>
+                <h2>Edit Project</h2>
+            </div>
+            <button onclick="document.getElementById('editProjectModal').close()"><i data-lucide="x"></i></button>
+        </div>
+        <form id="editProjectForm" method="POST">
+            {% csrf_token %}
+            <div class="form-body">
+                <p><label>Project Title</label><input type="text" name="title" id="edit-project-title" class="form-control" required></p>
+                <p>
+                    <label>Client</label>
+                    <select name="client" id="edit-project-client" class="form-control">
+                        <option value="">---------</option>
+                        {% for client in clients %}
+                        <option value="{{ client.pk }}">{{ client.name }}</option>
+                        {% endfor %}
+                    </select>
+                </p>
+                <p><label>Status</label><input type="text" name="status" id="edit-project-status" class="form-control" placeholder="e.g. In Development"></p>
+                <p><label>Progress (%)</label><input type="number" name="progress" id="edit-project-progress" class="form-control" min="0" max="100"></p>
+                <p><label>Deadline</label><input type="date" name="deadline" id="edit-project-deadline" class="form-control"></p>
+                <p>
+                    <label>Health</label>
+                    <select name="health" id="edit-project-health" class="form-control">
+                        <option value="Green">Green</option>
+                        <option value="Yellow">Yellow</option>
+                        <option value="Red">Red</option>
+                    </select>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" onclick="document.getElementById('editProjectModal').close()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update Project</button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+<!-- ═══════ DELETE PROJECT MODAL ═══════ -->
+<dialog id="deleteProjectModal" class="admin-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 36px; height: 36px; background: #FEF2F2; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #EF4444;">
+                    <i data-lucide="alert-triangle" style="width: 18px; height: 18px;"></i>
+                </div>
+                <h2>Delete Project</h2>
+            </div>
+            <button onclick="document.getElementById('deleteProjectModal').close()"><i data-lucide="x"></i></button>
+        </div>
+        <div class="form-body" style="padding: 20px 0;">
+            <p style="color: #475569; margin: 0; line-height: 1.6;"> Are you sure you want to delete <strong id="delete-project-title" style="color: #EF4444;"></strong>? This action cannot be undone.</p>
+        </div>
+        <form id="deleteProjectForm" method="POST">
+            {% csrf_token %}
+            <div class="modal-footer">
+                <button type="button" class="btn" onclick="document.getElementById('deleteProjectModal').close()">Cancel</button>
+                <button type="submit" class="btn" style="background: #EF4444; color: white; border: none;">Yes, Delete Project</button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function openEditProjectModal(pk, title, clientPk, status, progress, deadline, health) {
+    document.getElementById('edit-project-title').value = title;
+    document.getElementById('edit-project-client').value = clientPk;
+    document.getElementById('edit-project-status').value = status;
+    document.getElementById('edit-project-progress').value = progress;
+    document.getElementById('edit-project-deadline').value = deadline;
+    document.getElementById('edit-project-health').value = health;
+    document.getElementById('editProjectForm').action = `/dashboard/projects/${pk}/edit/`;
+    document.getElementById('editProjectModal').showModal();
+    lucide.createIcons();
+}
+
+function confirmDeleteProject(pk, title) {
+    document.getElementById('delete-project-title').textContent = title;
+    document.getElementById('deleteProjectForm').action = `/dashboard/projects/${pk}/delete/`;
+    document.getElementById('deleteProjectModal').showModal();
+    lucide.createIcons();
+}
+</script>
 {% endblock %}

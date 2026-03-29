@@ -96,11 +96,13 @@ def clients_view(request):
 @login_required
 def projects_view(request):
     projects = Project.objects.all().order_by('-id')
+    clients = Client.objects.all().order_by('name')
     client_form = ClientForm()
     project_form = ProjectForm()
     context = {
         'active_tab': 'projects',
         'projects': projects,
+        'clients': clients,
         'client_form': client_form,
         'project_form': project_form,
     }
@@ -147,6 +149,27 @@ def add_project(request):
             messages.success(request, 'Project added successfully.')
         else:
             messages.error(request, 'Failed to add project. Please check the form.')
+    return redirect('core:projects')
+
+@login_required
+def edit_project(request, pk):
+    project = get_object_or_404(Project, pk=pk)
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, instance=project)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Project updated successfully.')
+        else:
+            messages.error(request, 'Failed to update project.')
+    return redirect('core:projects')
+
+@login_required
+def delete_project(request, pk):
+    project = get_object_or_404(Project, pk=pk)
+    if request.method == 'POST':
+        title = project.title
+        project.delete()
+        messages.success(request, f'Project "{title}" deleted.')
     return redirect('core:projects')
 
 # ─── Services CRUD ──────────────────────────────────────────────
