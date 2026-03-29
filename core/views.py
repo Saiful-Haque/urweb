@@ -6,7 +6,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
 from .forms import ContactForm, ClientForm, ProjectForm, ServiceForm, PortfolioForm, TestimonialForm
-from .models import Service, Project, Testimonial, Client, ContactMessage
+from .models import Service, Project, Testimonial, Client, ContactMessage, User
 
 # Create your views here.
 def home(request):
@@ -82,7 +82,24 @@ def contact_view(request):
 
 @staff_member_required
 def dashboard_view(request):
-    return render(request, 'core/dashboard.html', {'active_tab': 'dashboard'})
+    total_clients = Client.objects.count()
+    ongoing_projects = Project.objects.exclude(status__iexact='Launched').count()
+    unread_messages = ContactMessage.objects.filter(is_read=False).count()
+    
+    recent_projects = Project.objects.all().order_by('-id')[:5]
+    recent_logins = User.objects.filter(last_login__isnull=False).order_by('-last_login')[:5]
+    recent_inquiries = ContactMessage.objects.all().order_by('-created_at')[:3]
+    
+    context = {
+        'active_tab': 'dashboard',
+        'total_clients': total_clients,
+        'ongoing_projects': ongoing_projects,
+        'unread_messages': unread_messages,
+        'recent_projects': recent_projects,
+        'recent_logins': recent_logins,
+        'recent_inquiries': recent_inquiries,
+    }
+    return render(request, 'core/dashboard.html', context)
 
 @staff_member_required
 def clients_view(request):
