@@ -34,4 +34,6 @@ urlpatterns = [
     path('dashboard/messages/', views.messages_inbox, name='messages_inbox'),
     path('dashboard/messages/<int:pk>/toggle-read/', views.message_toggle_read, name='message_toggle_read'),
     path('dashboard/messages/<int:pk>/delete/', views.message_delete, name='message_delete'),
+    path('dashboard/messages/send/', views.send_email, name='send_email'),
+    path('dashboard/messages/<int:pk>/reply/', views.send_email, name='reply_to_message'),
 ]

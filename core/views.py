@@ -346,3 +346,39 @@ def message_delete(request, pk):
         msg.delete()
         messages.success(request, f'Message from "{name}" deleted.')
     return redirect('core:messages_inbox')
+
+@staff_member_required
+def send_email(request, pk=None):
+    """
+    pk is optional, if provided it's a reply to a ContactMessage
+    """
+    initial_to = ""
+    initial_subject = ""
+    if pk:
+        msg = get_object_or_404(ContactMessage, pk=pk)
+        initial_to = msg.email
+        initial_subject = f"Re: {msg.subject}"
+
+    if request.method == 'POST':
+        to_email = request.POST.get('to_email')
+        subject = request.POST.get('subject')
+        message_body = request.POST.get('message')
+        
+        try:
+            send_mail(
+                subject,
+                message_body,
+                settings.DEFAULT_FROM_EMAIL,
+                [to_email],
+                fail_silently=False,
+            )
+            messages.success(request, f'Email sent successfully to {to_email}.')
+            return redirect('core:messages_inbox')
+        except Exception as e:
+            messages.error(request, f'Failed to send email: {e}')
+
+    return render(request, 'core/send_email.html', {
+        'active_tab': 'messages',
+        'initial_to': initial_to,
+        'initial_subject': initial_subject,
+    })

@@ -25,9 +25,14 @@
         <h1 style="font-size: 1.8rem; margin: 0 0 8px 0; font-weight: 800;">Contact Inbox</h1>
         <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">Manage incoming leads and ethereal inquiries.</p>
     </div>
-    <div style="background: #F1F5F9; padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; gap: 8px; font-weight: 700; color: #475569; font-size: 0.85rem;">
-        <i data-lucide="mail-warning" style="width: 18px; height: 18px; color: #2563EB;"></i>
-        {{ unread_count }} Unread
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <a href="{% url 'core:send_email' %}" class="btn" style="background: #2563EB; color: white; border: none; display: flex; align-items: center; gap: 8px; text-decoration: none;">
+            <i data-lucide="plus"></i> Compose New
+        </a>
+        <div style="background: #F1F5F9; padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; gap: 8px; font-weight: 700; color: #475569; font-size: 0.85rem;">
+            <i data-lucide="mail-warning" style="width: 18px; height: 18px; color: #2563EB;"></i>
+            {{ unread_count }} Unread
+        </div>
     </div>
 </div>
 
@@ -55,7 +60,7 @@
                         </div>
                     </td>
                     <td style="padding: 20px 0;">
-                        <div style="cursor: pointer;" onclick="viewMessage('{{ msg.name|escapejs }}', '{{ msg.email|escapejs }}', '{{ msg.subject|escapejs }}', '{{ msg.message|escapejs }}', '{{ msg.created_at|date:'F d, Y H:i' }}')">
+                        <div style="cursor: pointer;" onclick="viewMessage('{{ msg.pk }}', '{{ msg.name|escapejs }}', '{{ msg.email|escapejs }}', '{{ msg.subject|escapejs }}', '{{ msg.message|escapejs }}', '{{ msg.created_at|date:'F d, Y H:i' }}')">
                             <span style="font-weight: 700; color: #1E293B; display: block; margin-bottom: 4px; font-size: 0.9rem;">{{ msg.subject }}</span>
                             <p style="color: #64748B; margin: 0; font-size: 0.85rem; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4;">
                                 {{ msg.message }}
@@ -121,7 +126,7 @@
              <div style="margin-top: 30px; padding-top: 20px; border-top: 1px dashed #E2E8F0; display: flex; justify-content: space-between; align-items: center;">
                  <span id="modal-msg-date" style="color: #94A3B8; font-size: 0.75rem;"></span>
                  <a id="modal-reply-btn" href="#" style="background: #2563EB; color: white; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; text-decoration: none; display: flex; align-items: center; gap: 8px;">
-                     <i data-lucide="reply" style="width: 14px; height: 14px;"></i> Reply via Email
+                     <i data-lucide="reply" style="width: 14px; height: 14px;"></i> Reply via Dashboard
                  </a>
              </div>
         </div>
@@ -157,13 +162,13 @@
 
 {% block extra_scripts %}
 <script>
-function viewMessage(name, email, subject, content, date) {
+function viewMessage(pk, name, email, subject, content, date) {
     document.getElementById('modal-msg-name').textContent = name;
     document.getElementById('modal-msg-email').textContent = email;
     document.getElementById('modal-msg-subject').textContent = subject;
     document.getElementById('modal-msg-content').textContent = content;
     document.getElementById('modal-msg-date').textContent = 'Received on ' + date;
-    document.getElementById('modal-reply-btn').href = `mailto:${email}?subject=Re: ${subject}`;
+    document.getElementById('modal-reply-btn').href = `/dashboard/messages/${pk}/reply/`;
     document.getElementById('messageDetailModal').showModal();
 }
 
