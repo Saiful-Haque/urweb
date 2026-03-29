@@ -12,4 +12,7 @@ urlpatterns = [
     path('contact/', views.contact_view, name='contact'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('dashboard/clients/', views.clients_view, name='clients'),
+    path('dashboard/projects/', views.projects_view, name='projects'),
+    path('dashboard/add-client/', views.add_client, name='add_client'),
+    path('dashboard/add-project/', views.add_project, name='add_project'),
 ]

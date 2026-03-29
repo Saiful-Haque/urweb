@@ -4,8 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
-from .forms import ContactForm
-from .models import Service, Project, Testimonial
+from .forms import ContactForm, ClientForm, ProjectForm
+from .models import Service, Project, Testimonial, Client
 
 # Create your views here.
 def home(request):
@@ -86,3 +86,38 @@ def dashboard_view(request):
 @login_required
 def clients_view(request):
     return render(request, 'core/clients.html', {'active_tab': 'clients'})
+
+@login_required
+def projects_view(request):
+    projects = Project.objects.all().order_by('-id')
+    client_form = ClientForm()
+    project_form = ProjectForm()
+    context = {
+        'active_tab': 'projects',
+        'projects': projects,
+        'client_form': client_form,
+        'project_form': project_form,
+    }
+    return render(request, 'core/projects.html', context)
+
+@login_required
+def add_client(request):
+    if request.method == 'POST':
+        form = ClientForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Client added successfully.')
+        else:
+            messages.error(request, 'Failed to add client. Please check the form.')
+    return redirect('core:projects')
+
+@login_required
+def add_project(request):
+    if request.method == 'POST':
+        form = ProjectForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Project added successfully.')
+        else:
+            messages.error(request, 'Failed to add project. Please check the form.')
+    return redirect('core:projects')

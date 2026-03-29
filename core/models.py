@@ -32,6 +32,16 @@ class Service(models.Model):
     def __str__(self):
         return self.title
 
+class Client(models.Model):
+    name = models.CharField(max_length=200)
+    industry = models.CharField(max_length=100)
+    total_spent = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    health_status = models.CharField(max_length=20, choices=[('ON TRACK', 'On Track'), ('DELAYED', 'Delayed'), ('INACTIVE', 'Inactive')], default='ON TRACK')
+    logo_color = models.CharField(max_length=50, default='#111827')
+
+    def __str__(self):
+        return self.name
+
 class Project(models.Model):
     title = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, blank=True)
@@ -41,6 +51,15 @@ class Project(models.Model):
     image_style = models.CharField(max_length=50, choices=[('dark', 'Dark'), ('light', 'Light'), ('accent', 'Accent')], default='accent')
     link = models.CharField(max_length=200, default="#")
     order = models.PositiveIntegerField(default=0)
+    
+    # SaaS Management Fields
+    project_id = models.CharField(max_length=20, blank=True, help_text="e.g., PRJ-9402")
+    client = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, blank=True, related_name='projects')
+    progress = models.IntegerField(default=0, help_text="0 to 100")
+    deadline = models.DateField(null=True, blank=True)
+    status = models.CharField(max_length=50, default='Consultation', help_text="e.g., Development, Design, Launch")
+    health = models.CharField(max_length=20, default='Green', choices=[('Green', 'Green'), ('Yellow', 'Yellow'), ('Red', 'Red')])
+
 
     class Meta:
         ordering = ['order']

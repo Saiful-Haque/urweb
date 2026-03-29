@@ -58,9 +58,17 @@
         </nav>
 
         <div class="sidebar-footer" style="padding-top: 20px; border-top: none;">
-            <a href="#" class="nav-item" style="color: var(--text-muted); font-weight: 500;">
+            <a href="#" class="nav-item" style="color: var(--text-muted); font-weight: 500; margin-bottom: 20px;">
                 <i data-lucide="help-circle"></i> Help Center
             </a>
+            
+            <div class="user-profile-bottom" style="background: #F8FAFC; border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px; margin-top: auto;">
+                <div class="user-avatar-bottom" style="width: 36px; height: 36px; border-radius: 50%; background: url('https://i.pravatar.cc/150?u=admin') center/cover; flex-shrink: 0;"></div>
+                <div class="user-info-bottom" style="overflow: hidden;">
+                    <span class="user-name-bottom" style="display: block; font-weight: 700; font-size: 0.85rem; color: var(--secondary); white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">Alex Rivera</span>
+                    <span class="user-role-bottom" style="display: block; font-size: 0.7rem; color: var(--text-muted);">Senior Strategist</span>
+                </div>
+            </div>
         </div>
     </aside>
 
@@ -87,13 +95,6 @@
                 <button class="btn btn-primary topbar-btn"><i data-lucide="plus"></i> Add Item</button>
                 {% endblock %}
                 
-                <div class="user-profile-top">
-                    <div class="user-info-top" style="text-align: right; margin-right: 12px;">
-                        <span class="user-name-top" style="display: block; font-weight: 700; font-size: 0.9rem; color: var(--secondary);">Alex Rivera</span>
-                        <span class="user-role-top" style="display: block; font-size: 0.75rem; color: var(--text-muted);">Senior Strategist</span>
-                    </div>
-                    <div class="user-avatar-top" style="width: 40px; height: 40px; border-radius: 50%; background: url('https://i.pravatar.cc/150?u=admin') center/cover;"></div>
-                </div>
             </div>
         </header>
 
