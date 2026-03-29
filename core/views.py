@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
-from .forms import ContactForm, ClientForm, ProjectForm, ServiceForm
+from .forms import ContactForm, ClientForm, ProjectForm, ServiceForm, PortfolioForm
 from .models import Service, Project, Testimonial, Client
 
 # Create your views here.
@@ -164,4 +164,47 @@ def service_delete(request, pk):
         service.delete()
         messages.success(request, f'Service "{service.title}" deleted.')
     return redirect('core:services_manager')
+
+# ─── Portfolio CRUD ──────────────────────────────────────────────
+@login_required
+def portfolio_manager(request):
+    items = Project.objects.all().order_by('order')
+    form = PortfolioForm()
+    return render(request, 'core/portfolio_manager.html', {
+        'active_tab': 'portfolio',
+        'items': items,
+        'form': form,
+    })
+
+@login_required
+def portfolio_add(request):
+    if request.method == 'POST':
+        form = PortfolioForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Portfolio item added successfully.')
+        else:
+            messages.error(request, 'Failed to add portfolio item.')
+    return redirect('core:portfolio_manager')
+
+@login_required
+def portfolio_edit(request, pk):
+    item = get_object_or_404(Project, pk=pk)
+    if request.method == 'POST':
+        form = PortfolioForm(request.POST, instance=item)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Portfolio item updated successfully.')
+        else:
+            messages.error(request, 'Failed to update portfolio item.')
+    return redirect('core:portfolio_manager')
+
+@login_required
+def portfolio_delete(request, pk):
+    item = get_object_or_404(Project, pk=pk)
+    if request.method == 'POST':
+        title = item.title
+        item.delete()
+        messages.success(request, f'Portfolio item "{title}" deleted.')
+    return redirect('core:portfolio_manager')
 

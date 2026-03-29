@@ -1,0 +1,255 @@
+{% extends "core/admin_base.html" %}
+
+{% block title %}Portfolio Manager | urweb{% endblock %}
+
+{% block topbar_action %}
+<button class="btn btn-primary topbar-btn" onclick="openAddModal()">
+    <i data-lucide="plus"></i> Add Project
+</button>
+{% endblock %}
+
+{% block admin_content %}
+
+<!-- Toast Messages -->
+{% if messages %}
+<div id="toast-container" style="position: fixed; top: 24px; right: 32px; z-index: 10000; display: flex; flex-direction: column; gap: 10px;">
+    {% for msg in messages %}
+    <div style="
+        background: {% if 'success' in msg.tags %}#ECFDF5; border-left: 4px solid #10B981; color: #065F46;
+        {% else %}#FEF2F2; border-left: 4px solid #EF4444; color: #991B1B;{% endif %}
+        padding: 14px 20px; border-radius: 10px; font-weight: 600; font-size: 0.9rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1); min-width: 280px;
+        animation: slideInRight 0.3s ease;">{{ msg }}</div>
+    {% endfor %}
+</div>
+<style>@keyframes slideInRight { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }</style>
+<script>setTimeout(() => { const c = document.getElementById('toast-container'); if (c) c.style.transition = '0.4s', c.style.opacity = '0', setTimeout(() => c.remove(), 400); }, 3500);</script>
+{% endif %}
+
+<!-- Page Header -->
+<div class="content-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px;">
+    <div>
+        <h1 style="font-size: 1.8rem; margin: 0 0 8px 0; font-weight: 800;">Portfolio</h1>
+        <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">Manage portfolio projects shown on your public website.</p>
+    </div>
+    <div style="background: #EFF6FF; color: #2563EB; font-size: 0.85rem; font-weight: 700; padding: 8px 16px; border-radius: 20px;">
+        {{ items.count }} Item{{ items.count|pluralize }} Total
+    </div>
+</div>
+
+<!-- Portfolio Grid Table -->
+<div class="dashboard-panel" style="padding: 0; overflow: hidden;">
+    <table class="status-table" style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th style="padding: 20px 24px;">PREVIEW</th>
+                <th style="padding: 20px 0;">TITLE & CATEGORY</th>
+                <th style="padding: 20px 0;">TECHNOLOGIES</th>
+                <th style="padding: 20px 0; text-align: center;">ORDER</th>
+                <th style="padding: 20px 24px 20px 0; text-align: right;">ACTIONS</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr style="border-top: 1px solid #F1F5F9;">
+                <!-- Colour chip preview -->
+                <td style="padding-left: 24px; width: 80px;">
+                    <div style="width: 52px; height: 52px; border-radius: 12px;
+                        background: {% if item.image_style == 'cyan' %}linear-gradient(135deg,#0E7490,#0EA5E9)
+                        {% elif item.image_style == 'purple' %}linear-gradient(135deg,#7C3AED,#A855F7)
+                        {% elif item.image_style == 'orange' %}linear-gradient(135deg,#EA580C,#F97316)
+                        {% elif item.image_style == 'green' %}linear-gradient(135deg,#15803D,#22C55E)
+                        {% elif item.image_style == 'pink' %}linear-gradient(135deg,#BE185D,#EC4899)
+                        {% else %}linear-gradient(135deg,#1E293B,#334155){% endif %};
+                        display: flex; align-items: center; justify-content: center;">
+                        <i data-lucide="layout-grid" style="color: white; width: 22px; height: 22px;"></i>
+                    </div>
+                </td>
+                <td style="padding: 20px 0;">
+                    <div style="font-weight: 700; font-size: 0.95rem; color: #1E293B;">{{ item.title }}</div>
+                    {% if item.category %}
+                    <div style="margin-top: 4px;">
+                        <span style="background: #F0FDF4; color: #16A34A; font-size: 0.75rem; font-weight: 600; padding: 3px 10px; border-radius: 12px;">{{ item.category }}</span>
+                    </div>
+                    {% endif %}
+                </td>
+                <td style="padding: 20px 16px 20px 0; max-width: 240px;">
+                    <span style="color: #64748B; font-size: 0.85rem;">{{ item.technologies|default:"—"|truncatechars:50 }}</span>
+                </td>
+                <td style="text-align: center;">
+                    <span style="background: #F1F5F9; color: #475569; border-radius: 6px; padding: 4px 12px; font-weight: 600; font-size: 0.85rem;">{{ item.order }}</span>
+                </td>
+                <td style="text-align: right; padding-right: 24px;">
+                    <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                        {% if item.link %}
+                        <a href="{{ item.link }}" target="_blank"
+                            style="background: #F0FDF4; border: none; color: #16A34A; border-radius: 8px; padding: 7px 14px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none; transition: 0.2s;"
+                            onmouseover="this.style.background='#16A34A'; this.style.color='white';"
+                            onmouseout="this.style.background='#F0FDF4'; this.style.color='#16A34A';">
+                            <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> View
+                        </a>
+                        {% endif %}
+                        <button
+                            onclick="openEditModal({{ item.pk }}, '{{ item.title|escapejs }}', '{{ item.category|default:''|escapejs }}', '{{ item.technologies|default:''|escapejs }}', '{{ item.description|default:''|escapejs }}', '{{ item.image_style|escapejs }}', '{{ item.link|default:''|escapejs }}', {{ item.order }})"
+                            style="background: #EFF6FF; border: none; color: #2563EB; border-radius: 8px; padding: 7px 14px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s;"
+                            onmouseover="this.style.background='#2563EB'; this.style.color='white';"
+                            onmouseout="this.style.background='#EFF6FF'; this.style.color='#2563EB';">
+                            <i data-lucide="pencil" style="width: 14px; height: 14px;"></i> Edit
+                        </button>
+                        <button
+                            onclick="confirmDelete({{ item.pk }}, '{{ item.title|escapejs }}')"
+                            style="background: #FEF2F2; border: none; color: #EF4444; border-radius: 8px; padding: 7px 14px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s;"
+                            onmouseover="this.style.background='#EF4444'; this.style.color='white';"
+                            onmouseout="this.style.background='#FEF2F2'; this.style.color='#EF4444';">
+                            <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 60px 24px; color: #94A3B8;">
+                    <i data-lucide="layout-grid" style="width: 40px; height: 40px; display: block; margin: 0 auto 12px;"></i>
+                    No portfolio items yet. Click <strong>+ Add Project</strong> to create the first one.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- SaaS Footer -->
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 40px 0 20px 0;">
+    <span style="font-size: 0.85rem; color: #94A3B8;">&copy; 2024 urweb. All rights reserved.</span>
+</div>
+
+<!-- ═══════ ADD MODAL ═══════ -->
+<dialog id="addPortfolioModal" class="admin-modal">
+    <div class="modal-content" style="max-width: 560px; width: 100%;">
+        <div class="modal-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 36px; height: 36px; background: #EFF6FF; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #2563EB;">
+                    <i data-lucide="plus-circle" style="width: 18px; height: 18px;"></i>
+                </div>
+                <h2>Add Portfolio Item</h2>
+            </div>
+            <button onclick="document.getElementById('addPortfolioModal').close()"><i data-lucide="x"></i></button>
+        </div>
+        <form action="{% url 'core:portfolio_add' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-body">{{ form.as_p }}</div>
+            <div class="modal-footer">
+                <button type="button" class="btn" style="background: white; border: 1px solid #E2E8F0; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;"
+                    onclick="document.getElementById('addPortfolioModal').close()">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <i data-lucide="save" style="width: 16px; height: 16px;"></i> Save Item
+                </button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+<!-- ═══════ EDIT MODAL ═══════ -->
+<dialog id="editPortfolioModal" class="admin-modal">
+    <div class="modal-content" style="max-width: 560px; width: 100%;">
+        <div class="modal-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 36px; height: 36px; background: #EFF6FF; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #2563EB;">
+                    <i data-lucide="pencil" style="width: 18px; height: 18px;"></i>
+                </div>
+                <h2>Edit Portfolio Item</h2>
+            </div>
+            <button onclick="document.getElementById('editPortfolioModal').close()"><i data-lucide="x"></i></button>
+        </div>
+        <form id="editPortfolioForm" method="POST">
+            {% csrf_token %}
+            <div class="form-body">
+                <p><label>Title *</label><input type="text" name="title" id="e-title" class="form-control" required></p>
+                <p><label>Category</label><input type="text" name="category" id="e-category" class="form-control" placeholder="e.g. Web Design"></p>
+                <p><label>Technologies</label><input type="text" name="technologies" id="e-tech" class="form-control" placeholder="e.g. React • Node.js"></p>
+                <p><label>Description</label><textarea name="description" id="e-desc" class="form-control" rows="3"></textarea></p>
+                <p>
+                    <label>Colour Theme</label>
+                    <select name="image_style" id="e-style" class="form-control">
+                        <option value="dark">Dark</option>
+                        <option value="cyan">Cyan</option>
+                        <option value="purple">Purple</option>
+                        <option value="orange">Orange</option>
+                        <option value="green">Green</option>
+                        <option value="pink">Pink</option>
+                    </select>
+                </p>
+                <p><label>Live Link</label><input type="url" name="link" id="e-link" class="form-control" placeholder="https://..."></p>
+                <p><label>Display Order</label><input type="number" name="order" id="e-order" class="form-control" min="0"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" style="background: white; border: 1px solid #E2E8F0; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;"
+                    onclick="document.getElementById('editPortfolioModal').close()">Cancel</button>
+                <button type="submit" class="btn btn-primary" style="background: #2563EB;">
+                    <i data-lucide="check" style="width: 16px; height: 16px;"></i> Update Item
+                </button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+<!-- ═══════ DELETE MODAL ═══════ -->
+<dialog id="deletePortfolioModal" class="admin-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 36px; height: 36px; background: #FEF2F2; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #EF4444;">
+                    <i data-lucide="alert-triangle" style="width: 18px; height: 18px;"></i>
+                </div>
+                <h2>Delete Portfolio Item</h2>
+            </div>
+            <button onclick="document.getElementById('deletePortfolioModal').close()"><i data-lucide="x"></i></button>
+        </div>
+        <div class="form-body" style="padding-top: 20px;">
+            <p style="color: #475569; margin: 0; line-height: 1.6;">
+                Are you sure you want to delete <strong id="delete-item-name" style="color: #EF4444;"></strong>?<br>
+                <span style="color: #94A3B8; font-size: 0.85rem;">This action cannot be undone.</span>
+            </p>
+        </div>
+        <form id="deletePortfolioForm" method="POST">
+            {% csrf_token %}
+            <div class="modal-footer">
+                <button type="button" class="btn" style="background: white; border: 1px solid #E2E8F0; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;"
+                    onclick="document.getElementById('deletePortfolioModal').close()">Cancel</button>
+                <button type="submit" class="btn" style="background: #EF4444; color: white; padding: 10px 20px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer;">
+                    <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i> Yes, Delete
+                </button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function openAddModal() {
+    document.getElementById('addPortfolioModal').showModal();
+}
+
+function openEditModal(pk, title, category, tech, desc, style, link, order) {
+    document.getElementById('e-title').value    = title;
+    document.getElementById('e-category').value = category;
+    document.getElementById('e-tech').value     = tech;
+    document.getElementById('e-desc').value     = desc;
+    document.getElementById('e-style').value    = style;
+    document.getElementById('e-link').value     = link;
+    document.getElementById('e-order').value    = order;
+    document.getElementById('editPortfolioForm').action = `/dashboard/portfolio/${pk}/edit/`;
+    document.getElementById('editPortfolioModal').showModal();
+    lucide.createIcons();
+}
+
+function confirmDelete(pk, name) {
+    document.getElementById('delete-item-name').textContent = name;
+    document.getElementById('deletePortfolioForm').action = `/dashboard/portfolio/${pk}/delete/`;
+    document.getElementById('deletePortfolioModal').showModal();
+    lucide.createIcons();
+}
+</script>
+{% endblock %}

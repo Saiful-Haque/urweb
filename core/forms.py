@@ -12,6 +12,20 @@ class ServiceForm(forms.ModelForm):
             'order': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
         }
 
+class PortfolioForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['title', 'category', 'technologies', 'description', 'image_style', 'link', 'order']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'required': True, 'placeholder': 'e.g. Vortex E-commerce Platform'}),
+            'category': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Web Design, Mobile App'}),
+            'technologies': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "e.g. React • Node.js • MongoDB"}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Briefly describe the project...'}),
+            'image_style': forms.Select(attrs={'class': 'form-control'}),
+            'link': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://...'}),
+            'order': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
+        }
+
 
 class ContactForm(forms.ModelForm):
     class Meta:

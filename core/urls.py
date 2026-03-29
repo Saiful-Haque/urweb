@@ -19,4 +19,8 @@ urlpatterns = [
     path('dashboard/services/add/', views.service_add, name='service_add'),
     path('dashboard/services/<int:pk>/edit/', views.service_edit, name='service_edit'),
     path('dashboard/services/<int:pk>/delete/', views.service_delete, name='service_delete'),
+    path('dashboard/portfolio/', views.portfolio_manager, name='portfolio_manager'),
+    path('dashboard/portfolio/add/', views.portfolio_add, name='portfolio_add'),
+    path('dashboard/portfolio/<int:pk>/edit/', views.portfolio_edit, name='portfolio_edit'),
+    path('dashboard/portfolio/<int:pk>/delete/', views.portfolio_delete, name='portfolio_delete'),
 ]
