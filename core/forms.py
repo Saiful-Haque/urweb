@@ -1,5 +1,17 @@
 from django import forms
-from .models import ContactMessage, Client, Project, Service
+from .models import ContactMessage, Client, Project, Service, Testimonial
+
+class TestimonialForm(forms.ModelForm):
+    class Meta:
+        model = Testimonial
+        fields = ['client_name', 'client_title', 'quote', 'avatar_initials', 'stars']
+        widgets = {
+            'client_name': forms.TextInput(attrs={'class': 'form-control', 'required': True, 'placeholder': 'e.g. John Doe'}),
+            'client_title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. CEO of TechCorp'}),
+            'quote': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'What did the client say?'}),
+            'avatar_initials': forms.TextInput(attrs={'class': 'form-control', 'maxlength': 2, 'placeholder': 'e.g. JD'}),
+            'stars': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 5}),
+        }
 
 class ServiceForm(forms.ModelForm):
     class Meta:

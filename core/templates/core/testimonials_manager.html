@@ -1,0 +1,195 @@
+{% extends "core/admin_base.html" %}
+
+{% block title %}Testimonials | urweb{% endblock %}
+
+{% block topbar_action %}
+<button class="btn btn-primary topbar-btn" onclick="document.getElementById('addTestimonialModal').showModal()"><i data-lucide="plus"></i> Add Testimonial</button>
+{% endblock %}
+
+{% block admin_content %}
+
+<!-- Toast Messages -->
+{% if messages %}
+<div id="toast-container" style="position: fixed; top: 24px; right: 32px; z-index: 10000; display: flex; flex-direction: column; gap: 10px;">
+    {% for msg in messages %}
+    <div style="
+        background: {% if 'success' in msg.tags %}#ECFDF5; border-left: 4px solid #10B981; color: #065F46;
+        {% else %}#FEF2F2; border-left: 4px solid #EF4444; color: #991B1B;{% endif %}
+        padding: 14px 20px; border-radius: 10px; font-weight: 600; font-size: 0.9rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1); min-width: 280px;
+        animation: slideInRight 0.3s ease;">{{ msg }}</div>
+    {% endfor %}
+</div>
+<style>@keyframes slideInRight { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }</style>
+<script>setTimeout(() => { const c = document.getElementById('toast-container'); if (c) c.style.transition = '0.4s', c.style.opacity = '0', setTimeout(() => c.remove(), 400); }, 3500);</script>
+{% endif %}
+
+<div class="content-header">
+    <h1 style="font-size: 1.8rem; margin: 0 0 8px 0; font-weight: 800;">Testimonials</h1>
+    <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">Manage client feedback and social proof for your platform.</p>
+</div>
+
+<!-- Testimonials Table -->
+<div class="dashboard-panel" style="padding: 0; overflow: hidden;">
+    <div class="status-table-container">
+        <table class="status-table clients-table" style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th style="padding: 24px; padding-bottom: 24px;">CLIENT</th>
+                    <th style="padding-bottom: 24px;">QUOTE</th>
+                    <th style="padding-bottom: 24px;">RATING</th>
+                    <th style="padding-bottom: 24px; text-align: right; padding-right: 24px;">ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in testimonials %}
+                <tr style="border-top: 1px solid #F1F5F9;">
+                    <td style="padding-left: 24px; width: 25%;">
+                        <div class="client-cell" style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 40px; height: 40px; background: #EEF2FF; color: #4F46E5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem;">
+                                {{ t.avatar_initials }}
+                            </div>
+                            <div class="client-info">
+                                <span class="client-name" style="font-weight: 700; color: #1E293B; display: block;">{{ t.client_name }}</span>
+                                <span class="client-sub" style="color: #64748B; font-size: 0.8rem;">{{ t.client_title }}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="max-width: 400px; padding: 20px 0;">
+                        <p style="color: #475569; margin: 0; font-size: 0.9rem; line-height: 1.5; font-style: italic;">"{{ t.quote|truncatechars:120 }}"</p>
+                    </td>
+                    <td>
+                        <div style="display: flex; gap: 2px; color: #F59E0B;">
+                            {% for i in "12345" %}
+                                <i data-lucide="star" style="width: 14px; height: 14px; {% if forloop.counter <= t.stars %}fill: #F59E0B;{% endif %}"></i>
+                            {% endfor %}
+                        </div>
+                    </td>
+                    <td style="text-align: right; padding-right: 24px;">
+                        <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                            <button onclick="openEditTestimonialModal({{ t.pk }}, '{{ t.client_name|escapejs }}', '{{ t.client_title|escapejs }}', '{{ t.quote|escapejs }}', '{{ t.avatar_initials|escapejs }}', {{ t.stars }})"
+                                style="background: #EFF6FF; border: none; color: #2563EB; border-radius: 8px; padding: 7px 14px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                                <i data-lucide="pencil" style="width: 14px; height: 14px;"></i> Edit
+                            </button>
+                            <button onclick="confirmDeleteTestimonial({{ t.pk }}, '{{ t.client_name|escapejs }}')"
+                                style="background: #FEF2F2; border: none; color: #EF4444; border-radius: 8px; padding: 7px 14px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Delete
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 60px 24px; color: #94A3B8;">
+                         <i data-lucide="quote" style="width: 40px; height: 40px; display: block; margin: 0 auto 12px; opacity: 0.5;"></i>
+                         No testimonials yet. Click <strong>+ Add Testimonial</strong> to gather some praise!
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ═══════ ADD TESTIMONIAL MODAL ═══════ -->
+<dialog id="addTestimonialModal" class="admin-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 36px; height: 36px; background: #EFF6FF; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #2563EB;">
+                    <i data-lucide="plus-circle" style="width: 18px; height: 18px;"></i>
+                </div>
+                <h2>Add Testimonial</h2>
+            </div>
+            <button onclick="document.getElementById('addTestimonialModal').close()"><i data-lucide="x"></i></button>
+        </div>
+        <form action="{% url 'core:testimonial_add' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-body">
+                {{ form.as_p }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" onclick="document.getElementById('addTestimonialModal').close()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Testimonial</button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+<!-- ═══════ EDIT TESTIMONIAL MODAL ═══════ -->
+<dialog id="editTestimonialModal" class="admin-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 36px; height: 36px; background: #EFF6FF; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #2563EB;">
+                    <i data-lucide="pencil" style="width: 18px; height: 18px;"></i>
+                </div>
+                <h2>Edit Testimonial</h2>
+            </div>
+            <button onclick="document.getElementById('editTestimonialModal').close()"><i data-lucide="x"></i></button>
+        </div>
+        <form id="editTestimonialForm" method="POST">
+            {% csrf_token %}
+            <div class="form-body">
+                <p><label>Client Name</label><input type="text" name="client_name" id="edit-t-name" class="form-control" required></p>
+                <p><label>Title/Company</label><input type="text" name="client_title" id="edit-t-title" class="form-control" placeholder="e.g. CEO of TechCorp"></p>
+                <p><label>Quote</label><textarea name="quote" id="edit-t-quote" class="form-control" rows="4" required></textarea></p>
+                <p><label>Initials</label><input type="text" name="avatar_initials" id="edit-t-initials" class="form-control" maxlength="2"></p>
+                <p><label>Stars (1-5)</label><input type="number" name="stars" id="edit-t-stars" class="form-control" min="1" max="5"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" onclick="document.getElementById('editTestimonialModal').close()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update Testimonial</button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+<!-- ═══════ DELETE TESTIMONIAL MODAL ═══════ -->
+<dialog id="deleteTestimonialModal" class="admin-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 36px; height: 36px; background: #FEF2F2; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #EF4444;">
+                    <i data-lucide="alert-triangle" style="width: 18px; height: 18px;"></i>
+                </div>
+                <h2>Delete Testimonial</h2>
+            </div>
+            <button onclick="document.getElementById('deleteTestimonialModal').close()"><i data-lucide="x"></i></button>
+        </div>
+        <div class="form-body" style="padding: 20px 0;">
+            <p style="color: #475569; margin: 0; line-height: 1.6;"> Are you sure you want to delete the testimonial from <strong id="delete-t-name" style="color: #EF4444;"></strong>?</p>
+        </div>
+        <form id="deleteTestimonialForm" method="POST">
+            {% csrf_token %}
+            <div class="modal-footer">
+                <button type="button" class="btn" onclick="document.getElementById('deleteTestimonialModal').close()">Cancel</button>
+                <button type="submit" class="btn" style="background: #EF4444; color: white; border: none;">Yes, Delete</button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function openEditTestimonialModal(pk, name, title, quote, initials, stars) {
+    document.getElementById('edit-t-name').value = name;
+    document.getElementById('edit-t-title').value = title;
+    document.getElementById('edit-t-quote').value = quote;
+    document.getElementById('edit-t-initials').value = initials;
+    document.getElementById('edit-t-stars').value = stars;
+    document.getElementById('editTestimonialForm').action = `/dashboard/testimonials/${pk}/edit/`;
+    document.getElementById('editTestimonialModal').showModal();
+    lucide.createIcons();
+}
+
+function confirmDeleteTestimonial(pk, name) {
+    document.getElementById('delete-t-name').textContent = name;
+    document.getElementById('deleteTestimonialForm').action = `/dashboard/testimonials/${pk}/delete/`;
+    document.getElementById('deleteTestimonialModal').showModal();
+    lucide.createIcons();
+}
+</script>
+{% endblock %}

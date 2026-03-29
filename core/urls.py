@@ -27,4 +27,8 @@ urlpatterns = [
     path('dashboard/portfolio/add/', views.portfolio_add, name='portfolio_add'),
     path('dashboard/portfolio/<int:pk>/edit/', views.portfolio_edit, name='portfolio_edit'),
     path('dashboard/portfolio/<int:pk>/delete/', views.portfolio_delete, name='portfolio_delete'),
+    path('dashboard/testimonials/', views.testimonials_manager, name='testimonials_manager'),
+    path('dashboard/testimonials/add/', views.testimonial_add, name='testimonial_add'),
+    path('dashboard/testimonials/<int:pk>/edit/', views.testimonial_edit, name='testimonial_edit'),
+    path('dashboard/testimonials/<int:pk>/delete/', views.testimonial_delete, name='testimonial_delete'),
 ]

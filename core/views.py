@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
-from .forms import ContactForm, ClientForm, ProjectForm, ServiceForm, PortfolioForm
+from .forms import ContactForm, ClientForm, ProjectForm, ServiceForm, PortfolioForm, TestimonialForm
 from .models import Service, Project, Testimonial, Client
 
 # Create your views here.
@@ -257,3 +257,45 @@ def portfolio_delete(request, pk):
         messages.success(request, f'Portfolio item "{title}" deleted.')
     return redirect('core:portfolio_manager')
 
+# ─── Testimonials CRUD ──────────────────────────────────────────
+@login_required
+def testimonials_manager(request):
+    all_testimonials = Testimonial.objects.all().order_by('-id')
+    form = TestimonialForm()
+    return render(request, 'core/testimonials_manager.html', {
+        'active_tab': 'testimonials',
+        'testimonials': all_testimonials,
+        'form': form,
+    })
+
+@login_required
+def testimonial_add(request):
+    if request.method == 'POST':
+        form = TestimonialForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Testimonial added successfully.')
+        else:
+            messages.error(request, 'Failed to add testimonial.')
+    return redirect('core:testimonials_manager')
+
+@login_required
+def testimonial_edit(request, pk):
+    testimonial = get_object_or_404(Testimonial, pk=pk)
+    if request.method == 'POST':
+        form = TestimonialForm(request.POST, instance=testimonial)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Testimonial updated successfully.')
+        else:
+            messages.error(request, 'Failed to update testimonial.')
+    return redirect('core:testimonials_manager')
+
+@login_required
+def testimonial_delete(request, pk):
+    testimonial = get_object_or_404(Testimonial, pk=pk)
+    if request.method == 'POST':
+        name = testimonial.client_name
+        testimonial.delete()
+        messages.success(request, f'Testimonial from "{name}" deleted.')
+    return redirect('core:testimonials_manager')
