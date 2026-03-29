@@ -45,7 +45,7 @@
             <a href="{% url 'core:clients' %}" class="nav-item {% if active_tab == 'clients' %}active{% endif %}">
                 <i data-lucide="users"></i> Clients
             </a>
-            <a href="#" class="nav-item {% if active_tab == 'projects' %}active{% endif %}">
+            <a href="{% url 'core:projects' %}" class="nav-item {% if active_tab == 'projects' %}active{% endif %}">
                 <i data-lucide="folder"></i> Projects
             </a>
             <a href="#" class="nav-item {% if active_tab == 'tickets' %}active{% endif %}">
