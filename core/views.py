@@ -85,8 +85,13 @@ def dashboard_view(request):
 
 @login_required
 def clients_view(request):
+    clients = Client.objects.all().order_by('-id')
     client_form = ClientForm()
-    return render(request, 'core/clients.html', {'active_tab': 'clients', 'client_form': client_form})
+    return render(request, 'core/clients.html', {
+        'active_tab': 'clients', 
+        'clients': clients,
+        'client_form': client_form
+    })
 
 @login_required
 def projects_view(request):
@@ -110,7 +115,28 @@ def add_client(request):
             messages.success(request, 'Client added successfully.')
         else:
             messages.error(request, 'Failed to add client. Please check the form.')
-    return redirect('core:projects')
+    return redirect('core:clients')
+
+@login_required
+def edit_client(request, pk):
+    client = get_object_or_404(Client, pk=pk)
+    if request.method == 'POST':
+        form = ClientForm(request.POST, instance=client)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Client updated successfully.')
+        else:
+            messages.error(request, 'Failed to update client.')
+    return redirect('core:clients')
+
+@login_required
+def delete_client(request, pk):
+    client = get_object_or_404(Client, pk=pk)
+    if request.method == 'POST':
+        name = client.name
+        client.delete()
+        messages.success(request, f'Client "{name}" deleted.')
+    return redirect('core:clients')
 
 @login_required
 def add_project(request):

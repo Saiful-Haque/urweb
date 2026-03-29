@@ -7,6 +7,23 @@
 {% endblock %}
 
 {% block admin_content %}
+
+<!-- Toast Messages -->
+{% if messages %}
+<div id="toast-container" style="position: fixed; top: 24px; right: 32px; z-index: 10000; display: flex; flex-direction: column; gap: 10px;">
+    {% for msg in messages %}
+    <div style="
+        background: {% if 'success' in msg.tags %}#ECFDF5; border-left: 4px solid #10B981; color: #065F46;
+        {% else %}#FEF2F2; border-left: 4px solid #EF4444; color: #991B1B;{% endif %}
+        padding: 14px 20px; border-radius: 10px; font-weight: 600; font-size: 0.9rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1); min-width: 280px;
+        animation: slideInRight 0.3s ease;">{{ msg }}</div>
+    {% endfor %}
+</div>
+<style>@keyframes slideInRight { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }</style>
+<script>setTimeout(() => { const c = document.getElementById('toast-container'); if (c) c.style.transition = '0.4s', c.style.opacity = '0', setTimeout(() => c.remove(), 400); }, 3500);</script>
+{% endif %}
+
 <div class="content-header">
     <h1 style="font-size: 1.8rem; margin: 0 0 8px 0; font-weight: 800;">Clients</h1>
     <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">Manage your professional relationships and tracking client lifecycles.</p>
@@ -21,22 +38,22 @@
                 <i data-lucide="users" style="width: 28px; height: 28px;"></i>
             </div>
             <div>
-                <div class="metric-label" style="text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; font-weight: 700; color: #94A3B8;">Total Active Clients</div>
-                <div class="metric-value" style="font-size: 2.2rem;">1,284</div>
+                <div class="metric-label" style="text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; font-weight: 700; color: #94A3B8;">Total Clients</div>
+                <div class="metric-value" style="font-size: 2.2rem;">{{ clients.count }}</div>
             </div>
         </div>
     </div>
     
-    <!-- Growth -->
+    <!-- Growth (Static for now) -->
     <div class="metric-card" style="display: flex; align-items: center; justify-content: space-between; padding: 24px 30px;">
         <div style="display: flex; align-items: center; gap: 20px;">
             <div class="metric-icon" style="background: #CCFBF1; color: #0D9488; width: 60px; height: 60px; border-radius: 16px;">
                 <i data-lucide="trending-up" style="width: 28px; height: 28px;"></i>
             </div>
             <div>
-                <div class="metric-label" style="text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; font-weight: 700; color: #94A3B8;">Growth This Month</div>
+                <div class="metric-label" style="text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px; font-weight: 700; color: #94A3B8;">New This Month</div>
                 <div class="metric-value" style="font-size: 2.2rem; display: flex; align-items: center; gap: 12px;">
-                    +12% 
+                    +{{ clients.count }}
                     <span class="metric-badge positive" style="font-size: 0.75rem; background: #99F6E4; color: #0F766E;">NEW</span>
                 </div>
             </div>
@@ -52,14 +69,6 @@
         <button class="filter-pill" style="background: none; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; color: var(--text-muted); cursor: pointer; transition: 0.2s;">New</button>
         <button class="filter-pill" style="background: none; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; color: var(--text-muted); cursor: pointer; transition: 0.2s;">Inactive</button>
     </div>
-    <div class="filter-actions" style="display: flex; gap: 12px;">
-        <button class="btn" style="background: white; border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; color: var(--secondary); display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <i data-lucide="sliders-horizontal" style="width: 16px; height: 16px;"></i> Advanced Filters
-        </button>
-        <button class="btn" style="background: white; border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; color: var(--secondary); display: flex; align-items: center; gap: 8px; cursor: pointer;">
-            <i data-lucide="download" style="width: 16px; height: 16px;"></i> Export
-        </button>
-    </div>
 </div>
 
 <!-- Clients Table -->
@@ -70,183 +79,80 @@
                 <tr>
                     <th style="padding: 24px; padding-bottom: 24px;">CLIENT NAME</th>
                     <th style="padding-bottom: 24px;">INDUSTRY</th>
-                    <th style="padding-bottom: 24px;">ACTIVE PROJECTS</th>
                     <th style="padding-bottom: 24px;">TOTAL SPENT</th>
                     <th style="padding-bottom: 24px;">HEALTH STATUS</th>
                     <th style="padding-bottom: 24px; text-align: right; padding-right: 24px;">ACTIONS</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Vertex -->
-                <tr>
+                {% for client in clients %}
+                <tr style="border-top: 1px solid #F1F5F9;">
                     <td style="padding-left: 24px;">
-                        <div class="client-cell">
-                            <div class="client-logo" style="background: #111827; overflow: hidden; position: relative;">
-                                <div style="position: absolute; inset: 0; background: linear-gradient(135deg,rgba(0,255,255,0.2) 0%, transparent 100%);"></div>    
-                                <i data-lucide="zap" style="color: #67E8F9; width: 20px; height: 20px;"></i>
+                        <div class="client-cell" style="display: flex; align-items: center; gap: 12px;">
+                            <div class="client-logo" style="width: 40px; height: 40px; background: {{ client.logo_color|default:'#111827' }}; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white;">
+                                {{ client.name|slice:":1"|upper }}
                             </div>
                             <div class="client-info">
-                                <span class="client-name" style="font-size: 1rem;">Vertex Systems</span>
-                                <span class="client-sub" style="color: #93C5FD;">vertex-corp.io</span>
+                                <span class="client-name" style="font-weight: 700; color: #1E293B;">{{ client.name }}</span>
                             </div>
                         </div>
                     </td>
                     <td>
-                        <span style="color: var(--secondary); font-weight: 500;">Fintech</span>
+                        <span style="color: #64748B; font-weight: 500;">{{ client.industry }}</span>
                     </td>
                     <td>
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <span style="font-weight: 700; color: var(--secondary); font-size: 1.1rem;">12</span>
-                            <div class="progress-bar-container" style="width: 40px; height: 6px; background: #E2E8F0;">
-                                <div class="progress-bar fill-cyan" style="width: 80%; background: #0F766E;"></div>
-                            </div>
-                        </div>
+                        <span style="font-weight: 700; color: #1E293B; font-size: 1rem;">${{ client.total_spent|default:"0.00" }}</span>
                     </td>
                     <td>
-                        <span style="font-weight: 700; color: var(--secondary); font-size: 1.1rem;">$142,500.00</span>
-                    </td>
-                    <td>
-                        <span class="status-pill active-green" style="background: #5EEAD4; color: #0F766E; font-weight: 800; font-size: 0.7rem; padding: 6px 16px; border-radius: 20px; letter-spacing: 0.5px;">&bull; ON TRACK</span>
+                        <span class="status-pill" style="
+                            background: {% if client.health_status == 'HEALTHY' %}#CCFBF1; color: #0D9488;
+                            {% elif client.health_status == 'AT_RISK' %}#FEF3C7; color: #92400E;
+                            {% else %}#FEE2E2; color: #B91C1C;{% endif %}
+                            font-weight: 800; font-size: 0.75rem; padding: 6px 16px; border-radius: 20px; letter-spacing: 0.5px;">
+                            &bull; {{ client.get_health_status_display }}
+                        </span>
                     </td>
                     <td style="text-align: right; padding-right: 24px;">
-                        <button style="background: none; border: none; color: var(--text-muted); cursor: pointer;"><i data-lucide="more-vertical"></i></button>
+                        <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                            <button onclick="openEditClientModal({{ client.pk }}, '{{ client.name|escapejs }}', '{{ client.industry|escapejs }}', '{{ client.total_spent|escapejs }}', '{{ client.health_status|escapejs }}', '{{ client.logo_color|escapejs }}')"
+                                style="background: #EFF6FF; border: none; color: #2563EB; border-radius: 8px; padding: 7px 14px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                                <i data-lucide="pencil" style="width: 14px; height: 14px;"></i> Edit
+                            </button>
+                            <button onclick="confirmDeleteClient({{ client.pk }}, '{{ client.name|escapejs }}')"
+                                style="background: #FEF2F2; border: none; color: #EF4444; border-radius: 8px; padding: 7px 14px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Delete
+                            </button>
+                        </div>
                     </td>
                 </tr>
-                
-                <!-- Lumina Retail -->
+                {% empty %}
                 <tr>
-                    <td style="padding-left: 24px;">
-                        <div class="client-cell">
-                            <div class="client-logo" style="background: url('https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=100&h=100') center/cover;">
-                            </div>
-                            <div class="client-info">
-                                <span class="client-name" style="font-size: 1rem;">Lumina Retail</span>
-                                <span class="client-sub" style="color: #93C5FD;">lumina-retail.com</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <span style="color: var(--secondary); font-weight: 500;">E-commerce</span>
-                    </td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <span style="font-weight: 700; color: var(--secondary); font-size: 1.1rem;">4</span>
-                            <div class="progress-bar-container" style="width: 40px; height: 6px; background: #E2E8F0;">
-                                <div class="progress-bar" style="width: 40%; background: #EF4444;"></div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <span style="font-weight: 700; color: var(--secondary); font-size: 1.1rem;">$56,200.00</span>
-                    </td>
-                    <td>
-                        <span class="status-pill" style="background: #FECDD3; color: #BE123C; font-weight: 800; font-size: 0.7rem; padding: 6px 16px; border-radius: 20px; letter-spacing: 0.5px;">&bull; DELAYED</span>
-                    </td>
-                    <td style="text-align: right; padding-right: 24px;">
-                        <button style="background: none; border: none; color: var(--text-muted); cursor: pointer;"><i data-lucide="more-vertical"></i></button>
+                    <td colspan="5" style="text-align: center; padding: 60px 24px; color: #94A3B8;">
+                        <i data-lucide="users" style="width: 40px; height: 40px; display: block; margin: 0 auto 12px;"></i>
+                        No clients found. Click <strong>+ Add Client</strong> to get started.
                     </td>
                 </tr>
-
-                <!-- Pulse Media -->
-                <tr>
-                    <td style="padding-left: 24px;">
-                        <div class="client-cell">
-                            <div class="client-logo" style="background: url('https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=100&h=100') center/cover;">
-                            </div>
-                            <div class="client-info">
-                                <span class="client-name" style="font-size: 1rem;">Pulse Media</span>
-                                <span class="client-sub" style="color: #93C5FD;">pulse-media.net</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <span style="color: var(--secondary); font-weight: 500;">Marketing</span>
-                    </td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <span style="font-weight: 700; color: var(--secondary); font-size: 1.1rem;">28</span>
-                            <div class="progress-bar-container" style="width: 40px; height: 6px; background: #E2E8F0;">
-                                <div class="progress-bar" style="width: 90%; background: #0F766E;"></div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <span style="font-weight: 700; color: var(--secondary); font-size: 1.1rem;">$389,000.00</span>
-                    </td>
-                    <td>
-                        <span class="status-pill active-green" style="background: #5EEAD4; color: #0F766E; font-weight: 800; font-size: 0.7rem; padding: 6px 16px; border-radius: 20px; letter-spacing: 0.5px;">&bull; ON TRACK</span>
-                    </td>
-                    <td style="text-align: right; padding-right: 24px;">
-                        <button style="background: none; border: none; color: var(--text-muted); cursor: pointer;"><i data-lucide="more-vertical"></i></button>
-                    </td>
-                </tr>
-
-                <!-- Horizon Real Estate -->
-                <tr>
-                    <td style="padding-left: 24px;">
-                        <div class="client-cell">
-                            <div class="client-logo" style="background: #111827; position: relative; overflow: hidden;">
-                                <div style="position: absolute; inset: 0; background: linear-gradient(135deg,rgba(0,122,255,0.2) 0%, transparent 100%);"></div> 
-                                <i data-lucide="building" style="color: #60A5FA; width: 20px; height: 20px;"></i>
-                            </div>
-                            <div class="client-info">
-                                <span class="client-name" style="font-size: 1rem;">Horizon Real Estate</span>
-                                <span class="client-sub" style="color: #93C5FD;">horizon-prop.com</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <span style="color: var(--secondary); font-weight: 500;">Real Estate</span>
-                    </td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <span style="font-weight: 700; color: var(--secondary); font-size: 1.1rem;">2</span>
-                            <div class="progress-bar-container" style="width: 40px; height: 6px; background: #E2E8F0;">
-                                <div class="progress-bar" style="width: 15%; background: #94A3B8;"></div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <span style="font-weight: 700; color: var(--secondary); font-size: 1.1rem;">$12,400.00</span>
-                    </td>
-                    <td>
-                        <span class="status-pill" style="background: #E2E8F0; color: #475569; font-weight: 800; font-size: 0.7rem; padding: 6px 16px; border-radius: 20px; letter-spacing: 0.5px;">&bull; INACTIVE</span>
-                    </td>
-                    <td style="text-align: right; padding-right: 24px;">
-                        <button style="background: none; border: none; color: var(--text-muted); cursor: pointer;"><i data-lucide="more-vertical"></i></button>
-                    </td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
-        
-        <!-- Table Footer Pagination -->
-        <div style="padding: 24px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #64748B; font-size: 0.85rem; font-weight: 500;">Showing 1 to 10 of 1,284 clients</span>
-            <div style="display: flex; gap: 8px; align-items: center;">
-                <button style="width: 30px; height: 30px; border-radius: 8px; border: none; background: none; color: #94A3B8; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i></button>
-                <button style="width: 30px; height: 30px; border-radius: 8px; border: none; background: #0F766E; color: white; cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center;">1</button>
-                <button style="width: 30px; height: 30px; border-radius: 8px; border: none; background: none; color: var(--secondary); cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center;">2</button>
-                <button style="width: 30px; height: 30px; border-radius: 8px; border: none; background: none; color: var(--secondary); cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center;">3</button>
-                <button style="width: 30px; height: 30px; border-radius: 8px; border: none; background: none; color: #94A3B8; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i></button>
-            </div>
-        </div>
     </div>
 </div>
 
 <!-- SaaS Footer -->
 <div style="display: flex; justify-content: space-between; align-items: center; padding: 40px 0 20px 0;">
     <span style="font-size: 0.85rem; color: #94A3B8;">&copy; 2024 urweb. All rights reserved.</span>
-    <div style="display: flex; gap: 24px;">
-        <a href="#" style="font-size: 0.85rem; color: #94A3B8; text-decoration: none;">Privacy Policy</a>
-        <a href="#" style="font-size: 0.85rem; color: #94A3B8; text-decoration: none;">Terms of Service</a>
-        <a href="#" style="font-size: 0.85rem; color: #94A3B8; text-decoration: none;">Support</a>
-    </div>
 </div>
-<!-- Add Client Modal -->
+
+<!-- ═══════ ADD CLIENT MODAL ═══════ -->
 <dialog id="addClientModal" class="admin-modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2>Add New Client</h2>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 36px; height: 36px; background: #EFF6FF; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #2563EB;">
+                    <i data-lucide="user-plus" style="width: 18px; height: 18px;"></i>
+                </div>
+                <h2>Add New Client</h2>
+            </div>
             <button onclick="document.getElementById('addClientModal').close()"><i data-lucide="x"></i></button>
         </div>
         <form action="{% url 'core:add_client' %}" method="POST">
@@ -261,4 +167,88 @@
         </form>
     </div>
 </dialog>
+
+<!-- ═══════ EDIT CLIENT MODAL ═══════ -->
+<dialog id="editClientModal" class="admin-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 36px; height: 36px; background: #EFF6FF; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #2563EB;">
+                    <i data-lucide="pencil" style="width: 18px; height: 18px;"></i>
+                </div>
+                <h2>Edit Client</h2>
+            </div>
+            <button onclick="document.getElementById('editClientModal').close()"><i data-lucide="x"></i></button>
+        </div>
+        <form id="editClientForm" method="POST">
+            {% csrf_token %}
+            <div class="form-body">
+                <p><label>Client Name</label><input type="text" name="name" id="edit-client-name" class="form-control" required></p>
+                <p><label>Industry</label><input type="text" name="industry" id="edit-client-industry" class="form-control" required></p>
+                <p><label>Total Spent</label><input type="number" name="total_spent" id="edit-client-spent" class="form-control" step="0.01"></p>
+                <p>
+                    <label>Health Status</label>
+                    <select name="health_status" id="edit-client-health" class="form-control">
+                        <option value="HEALTHY">Healthy</option>
+                        <option value="AT_RISK">At Risk</option>
+                        <option value="CRITICAL">Critical</option>
+                    </select>
+                </p>
+                <p><label>Logo Color</label><input type="color" name="logo_color" id="edit-client-color" class="form-control" style="height: 40px;"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" onclick="document.getElementById('editClientModal').close()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update Client</button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+<!-- ═══════ DELETE CLIENT MODAL ═══════ -->
+<dialog id="deleteClientModal" class="admin-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 36px; height: 36px; background: #FEF2F2; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #EF4444;">
+                    <i data-lucide="alert-triangle" style="width: 18px; height: 18px;"></i>
+                </div>
+                <h2>Delete Client</h2>
+            </div>
+            <button onclick="document.getElementById('deleteClientModal').close()"><i data-lucide="x"></i></button>
+        </div>
+        <div class="form-body" style="padding: 20px 0;">
+            <p style="color: #475569; margin: 0; line-height: 1.6;"> Are you sure you want to delete <strong id="delete-client-name" style="color: #EF4444;"></strong>? This will not delete their associated projects but they will no longer be linked to this client.</p>
+        </div>
+        <form id="deleteClientForm" method="POST">
+            {% csrf_token %}
+            <div class="modal-footer">
+                <button type="button" class="btn" onclick="document.getElementById('deleteClientModal').close()">Cancel</button>
+                <button type="submit" class="btn" style="background: #EF4444; color: white; border: none;">Yes, Delete</button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function openEditClientModal(pk, name, industry, spent, health, color) {
+    document.getElementById('edit-client-name').value = name;
+    document.getElementById('edit-client-industry').value = industry;
+    document.getElementById('edit-client-spent').value = spent;
+    document.getElementById('edit-client-health').value = health;
+    document.getElementById('edit-client-color').value = color;
+    document.getElementById('editClientForm').action = `/dashboard/clients/${pk}/edit/`;
+    document.getElementById('editClientModal').showModal();
+    lucide.createIcons();
+}
+
+function confirmDeleteClient(pk, name) {
+    document.getElementById('delete-client-name').textContent = name;
+    document.getElementById('deleteClientForm').action = `/dashboard/clients/${pk}/delete/`;
+    document.getElementById('deleteClientModal').showModal();
+    lucide.createIcons();
+}
+</script>
 {% endblock %}
