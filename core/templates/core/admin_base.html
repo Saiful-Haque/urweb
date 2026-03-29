@@ -94,10 +94,14 @@
                 <input type="text" placeholder="Search clients, projects, or insights..." class="search-input" style="width: 450px;">
             </div>
             <div class="topbar-actions">
-                <button class="icon-btn notification-btn">
+                <a href="{% url 'core:messages_inbox' %}" class="icon-btn notification-btn" title="{{ navbar_unread_count }} Unread Messages" style="position: relative; text-decoration: none;">
                     <i data-lucide="bell"></i>
-                    <span class="notification-dot"></span>
-                </button>
+                    {% if navbar_unread_count > 0 %}
+                    <span class="notification-dot" style="position: absolute; top: -2px; right: -2px; background: #EF4444; color: white; font-size: 0.65rem; font-weight: 800; padding: 2px 5px; border-radius: 10px; border: 2px solid white; line-height: 1;">
+                        {{ navbar_unread_count }}
+                    </span>
+                    {% endif %}
+                </a>
                 <button class="icon-btn">
                     <i data-lucide="grid"></i>
                 </button>
