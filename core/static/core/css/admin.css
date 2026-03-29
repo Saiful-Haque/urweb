@@ -484,3 +484,24 @@ body, html {
 .bar {
     flex: 1; background: rgba(255,255,255,0.3); border-radius: 4px 4px 0 0;
 }
+
+/* Clients Page Specifics */
+.filter-pill.active {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+.filter-pill:not(.active):hover {
+    color: var(--secondary) !important;
+}
+.clients-table th {
+    padding: 24px 0 16px 0 !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 1px !important;
+}
+.clients-table td {
+    border-bottom: 1px solid #F1F5F9;
+    padding: 24px 0 !important;
+}
+.clients-table .client-logo {
+    border-radius: 12px;
+}
+

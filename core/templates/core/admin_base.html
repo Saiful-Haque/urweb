@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SaaS Management | urweb{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="{% static 'core/css/admin.css' %}?v={% now 'U' %}">
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: #F8FAFC;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<div class="admin-layout">
+    
+    <!-- Left Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i data-lucide="cloud" style="color: white; fill: white;"></i>
+            </div>
+            <div class="sidebar-branding">
+                <span class="brand-name">urweb</span>
+                <span class="brand-sub" style="text-transform: uppercase;">The Ethereal<br>Strategist</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{% url 'core:dashboard' %}" class="nav-item {% if active_tab == 'dashboard' %}active{% endif %}">
+                <i data-lucide="layout-dashboard"></i> Dashboard
+            </a>
+            <a href="{% url 'core:clients' %}" class="nav-item {% if active_tab == 'clients' %}active{% endif %}">
+                <i data-lucide="users"></i> Clients
+            </a>
+            <a href="#" class="nav-item {% if active_tab == 'projects' %}active{% endif %}">
+                <i data-lucide="folder"></i> Projects
+            </a>
+            <a href="#" class="nav-item {% if active_tab == 'tickets' %}active{% endif %}">
+                <i data-lucide="ticket"></i> Tickets
+            </a>
+
+            <a href="#" class="nav-item" style="margin-top: 20px;">
+                <i data-lucide="settings"></i> Settings
+            </a>
+        </nav>
+
+        <div class="sidebar-footer" style="padding-top: 20px; border-top: none;">
+            <a href="#" class="nav-item" style="color: var(--text-muted); font-weight: 500;">
+                <i data-lucide="help-circle"></i> Help Center
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="admin-main">
+        
+        <!-- Top Navigation -->
+        <header class="admin-topbar">
+            <div class="search-container">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" placeholder="Search clients, projects, or insights..." class="search-input" style="width: 450px;">
+            </div>
+            <div class="topbar-actions">
+                <button class="icon-btn notification-btn">
+                    <i data-lucide="bell"></i>
+                    <span class="notification-dot"></span>
+                </button>
+                <button class="icon-btn">
+                    <i data-lucide="grid"></i>
+                </button>
+                
+                {% block topbar_action %}
+                <!-- Dynamic Action Button -->
+                <button class="btn btn-primary topbar-btn"><i data-lucide="plus"></i> Add Item</button>
+                {% endblock %}
+                
+                <div class="user-profile-top">
+                    <div class="user-info-top" style="text-align: right; margin-right: 12px;">
+                        <span class="user-name-top" style="display: block; font-weight: 700; font-size: 0.9rem; color: var(--secondary);">Alex Rivera</span>
+                        <span class="user-role-top" style="display: block; font-size: 0.75rem; color: var(--text-muted);">Senior Strategist</span>
+                    </div>
+                    <div class="user-avatar-top" style="width: 40px; height: 40px; border-radius: 50%; background: url('https://i.pravatar.cc/150?u=admin') center/cover;"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Scrollable Content -->
+        <div class="admin-content">
+            {% block admin_content %}
+            {% endblock %}
+        </div>
+        
+    </main>
+</div>
+
+<script>
+    lucide.createIcons();
+</script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

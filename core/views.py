@@ -81,4 +81,8 @@ def contact_view(request):
 
 @login_required
 def dashboard_view(request):
-    return render(request, 'core/dashboard.html')
+    return render(request, 'core/dashboard.html', {'active_tab': 'dashboard'})
+
+@login_required
+def clients_view(request):
+    return render(request, 'core/clients.html', {'active_tab': 'clients'})

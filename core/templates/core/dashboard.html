@@ -1,374 +1,284 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaaS Management | urweb</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Main Style -->
-    <link rel="stylesheet" href="{% static 'core/css/admin.css' %}?v={% now 'U' %}">
-    <!-- Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            background-color: #F8FAFC; /* Light gray background */
-            height: 100%;
-            overflow: hidden; /* Prevent body scroll, handle in admin-main */
-        }
-    </style>
-</head>
-<body>
+{% extends "core/admin_base.html" %}
 
-<div class="admin-layout">
-    
-    <!-- Left Sidebar -->
-    <aside class="admin-sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-logo">
-                <i data-lucide="layout-template" style="color: white; fill: var(--primary);"></i>
-            </div>
-            <div class="sidebar-branding">
-                <span class="brand-name">urweb</span>
-                <span class="brand-sub">SaaS Management</span>
-            </div>
-        </div>
+{% block title %}Dashboard | urweb{% endblock %}
 
-        <nav class="sidebar-nav">
-            <a href="#" class="nav-item active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
-            <a href="#" class="nav-item"><i data-lucide="users"></i> Clients</a>
-            <a href="#" class="nav-item"><i data-lucide="rocket"></i> Projects</a>
-            <a href="#" class="nav-item"><i data-lucide="ticket"></i> Tickets</a>
-
-            <div class="nav-group-label">SYSTEM</div>
-            <a href="#" class="nav-item"><i data-lucide="settings"></i> Settings</a>
-        </nav>
-
-        <div class="sidebar-footer">
-            <div class="user-profile">
-                <div class="user-avatar">{{ user.username|make_list|first|upper }}</div>
-                <div class="user-info">
-                    <span class="user-name">{{ user.get_full_name|default:user.username }}</span>
-                    <span class="user-role">Admin Access</span>
-                </div>
-            </div>
-            <!-- Logout Form (Hidden but functional if needed) -->
-            <form action="{% url 'logout' %}" method="post" style="margin-top: 10px; width: 100%;">
-                {% csrf_token %}
-                <button type="submit" style="width: 100%; padding: 8px; background: none; border: 1px solid #E2E8F0; border-radius: 8px; color: var(--text-muted); cursor: pointer; font-size: 0.8rem; font-weight: 500;">Sign Out</button>
-            </form>
-        </div>
-    </aside>
-
-    <!-- Main Content Area -->
-    <main class="admin-main">
-        
-        <!-- Top Navigation -->
-        <header class="admin-topbar">
-            <div class="search-container">
-                <i data-lucide="search" class="search-icon"></i>
-                <input type="text" placeholder="Search clients or projects..." class="search-input">
-            </div>
-            <div class="topbar-actions">
-                <button class="icon-btn notification-btn">
-                    <i data-lucide="bell"></i>
-                    <span class="notification-dot"></span>
-                </button>
-                <button class="btn btn-primary topbar-btn"><i data-lucide="plus"></i> New Project</button>
-            </div>
-        </header>
-
-        <!-- Scrollable Content -->
-        <div class="admin-content">
-            
-            <div class="content-header">
-                <h1>Client Overview</h1>
-                <p>Manage urweb client lifecycles and active deployments.</p>
-            </div>
-
-            <!-- Metrics Row -->
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <div class="metric-header">
-                        <div class="metric-icon bg-cyan"><i data-lucide="users"></i></div>
-                        <div class="metric-badge positive">+12%</div>
-                    </div>
-                    <div class="metric-label">Active Clients</div>
-                    <div class="metric-value">1,284</div>
-                </div>
-                
-                <div class="metric-card">
-                    <div class="metric-header">
-                        <div class="metric-icon bg-cyan"><i data-lucide="rocket"></i></div>
-                        <div class="metric-badge positive">+4.2%</div>
-                    </div>
-                    <div class="metric-label">Ongoing Projects</div>
-                    <div class="metric-value">42</div>
-                </div>
-
-                <div class="metric-card">
-                    <div class="metric-header">
-                        <div class="metric-icon bg-red"><i data-lucide="life-buoy"></i></div>
-                        <div class="metric-badge urgent">8 Urgent</div>
-                    </div>
-                    <div class="metric-label">Open Tickets</div>
-                    <div class="metric-value">12</div>
-                </div>
-            </div>
-
-            <!-- Two-Column Layout -->
-            <div class="dashboard-split-layout">
-                
-                <!-- Left Column -->
-                <div class="dashboard-left">
-                    
-                    <!-- Project Status Tracker -->
-                    <div class="dashboard-panel">
-                        <div class="panel-header">
-                            <h2>Project Status Tracker</h2>
-                            <a href="#" class="view-all">View All Projects</a>
-                        </div>
-                        
-                        <div class="status-table-container">
-                            <table class="status-table">
-                                <thead>
-                                    <tr>
-                                        <th>CLIENT</th>
-                                        <th>PIPELINE STATUS</th>
-                                        <th>COMPLETION</th>
-                                        <th>HEALTH</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Vortex -->
-                                    <tr>
-                                        <td>
-                                            <div class="client-cell">
-                                                <div class="client-logo bg-purple">V</div>
-                                                <div class="client-info">
-                                                    <span class="client-name">Vortex Media</span>
-                                                    <span class="client-sub">E-commerce Revamp</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="pipeline-status">
-                                                <span class="status-pill active-blue">Development</span>
-                                                <i data-lucide="chevron-right" class="arrow-icon"></i>
-                                                <span class="status-pill inactive">Testing</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="completion-cell">
-                                                <div class="progress-bar-container">
-                                                    <div class="progress-bar fill-cyan" style="width: 65%;"></div>
-                                                </div>
-                                                <span class="completion-text">65% Completed</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="health-indicator success">
-                                                <i data-lucide="check-circle-2"></i> On Track
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    
-                                    <!-- Solaris -->
-                                    <tr>
-                                        <td>
-                                            <div class="client-cell">
-                                                <div class="client-logo bg-yellow">S</div>
-                                                <div class="client-info">
-                                                    <span class="client-name">Solaris Group</span>
-                                                    <span class="client-sub">Web App v2</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="pipeline-status">
-                                                <span class="status-pill inactive">Launch</span>
-                                                <i data-lucide="chevron-right" class="arrow-icon"></i>
-                                                <span class="status-pill active-green">Maintenance</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="completion-cell">
-                                                <div class="progress-bar-container">
-                                                    <div class="progress-bar fill-cyan" style="width: 92%;"></div>
-                                                </div>
-                                                <span class="completion-text">92% Completed</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="health-indicator warning">
-                                                <i data-lucide="alert-triangle"></i> Delayed
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <!-- NexGen -->
-                                    <tr>
-                                        <td>
-                                            <div class="client-cell">
-                                                <div class="client-logo bg-teal">N</div>
-                                                <div class="client-info">
-                                                    <span class="client-name">NexGen Inc</span>
-                                                    <span class="client-sub">CRM Integration</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="pipeline-status">
-                                                <span class="status-pill active-purple">Consultation</span>
-                                                <i data-lucide="chevron-right" class="arrow-icon"></i>
-                                                <span class="status-pill inactive">Design</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="completion-cell">
-                                                <div class="progress-bar-container">
-                                                    <div class="progress-bar fill-cyan" style="width: 15%;"></div>
-                                                </div>
-                                                <span class="completion-text">15% Completed</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="health-indicator success">
-                                                <i data-lucide="check-circle-2"></i> On Track
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Recent Client Logins -->
-                    <div class="dashboard-panel">
-                        <div class="panel-header">
-                            <h2>Recent Client Logins</h2>
-                            <i data-lucide="more-horizontal" class="more-icon" style="color: var(--text-muted); cursor: pointer;"></i>
-                        </div>
-                        <div class="logins-grid">
-                            <!-- Sarah -->
-                            <div class="login-card">
-                                <div class="login-avatar"><i data-lucide="user"></i></div>
-                                <div class="login-details">
-                                    <h4>Sarah Jenkins</h4>
-                                    <p>Last login: 12m ago &bull; IP: 192.168.1.1</p>
-                                </div>
-                                <a href="#" class="login-link"><i data-lucide="external-link"></i></a>
-                            </div>
-                            <!-- Michael -->
-                            <div class="login-card">
-                                <div class="login-avatar"><i data-lucide="user"></i></div>
-                                <div class="login-details">
-                                    <h4>Michael Chen</h4>
-                                    <p>Last login: 2h ago &bull; IP: 185.12.92.3</p>
-                                </div>
-                                <a href="#" class="login-link"><i data-lucide="external-link"></i></a>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Right Column -->
-                <div class="dashboard-right">
-                    
-                    <!-- Maintenance Tickets -->
-                    <div class="dashboard-panel">
-                        <div class="panel-header">
-                            <h2 style="font-size: 1.3rem;">Maintenance Tickets</h2>
-                            <span class="badge bg-red-light danger-text">8 Action Required</span>
-                        </div>
-                        
-                        <div class="ticket-list">
-                            <!-- Ticket 1 -->
-                            <div class="ticket-item border-red">
-                                <div class="ticket-meta">
-                                    <span class="ticket-id">TICKET #492</span>
-                                    <span class="ticket-priority red">HIGH PRIORITY</span>
-                                </div>
-                                <h4>Payment Gateway Timeout</h4>
-                                <p>Vortex Media checkout is throwing 504 errors on production.</p>
-                                <div class="ticket-footer">
-                                    <div class="ticket-users">
-                                        <div class="ticket-avatar" style="background:#fcd34d;"></div>
-                                        <div class="ticket-avatar" style="background:#fb923c; margin-left:-10px;"></div>
-                                    </div>
-                                    <button class="btn-reply">Reply</button>
-                                </div>
-                            </div>
-                            
-                            <!-- Ticket 2 -->
-                            <div class="ticket-item border-cyan">
-                                <div class="ticket-meta">
-                                    <span class="ticket-id">TICKET #491</span>
-                                    <span class="ticket-priority cyan">MEDIUM</span>
-                                </div>
-                                <h4>Update Banner Assets</h4>
-                                <p>Solaris Group requested a homepage hero update for Q4.</p>
-                                <div class="ticket-footer">
-                                    <div class="ticket-users">
-                                        <div class="ticket-avatar" style="background:#fdba74;"></div>
-                                    </div>
-                                    <button class="btn-reply">Reply</button>
-                                </div>
-                            </div>
-
-                            <!-- Ticket 3 -->
-                            <div class="ticket-item border-gray">
-                                <div class="ticket-meta">
-                                    <span class="ticket-id">TICKET #488</span>
-                                    <span class="ticket-priority gray">LOW</span>
-                                </div>
-                                <h4>Color Palette Tweak</h4>
-                                <p>Adjust primary blue to match new branding docs.</p>
-                                <div class="ticket-footer">
-                                    <div class="ticket-users">
-                                        <div class="ticket-avatar" style="background:#f97316;"></div>
-                                    </div>
-                                    <button class="btn-reply">Reply</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="text-center" style="margin-top: 15px;">
-                            <a href="#" class="view-more-btn">View More Support Cases</a>
-                        </div>
-                    </div>
-
-                    <!-- Client Success Card -->
-                    <div class="success-card">
-                        <div class="success-header">
-                            <i data-lucide="bar-chart-2"></i> Client Success
-                        </div>
-                        <p>98.2% of your clients are satisfied with current project pace.</p>
-                        <div class="chart-bars">
-                            <div class="bar" style="height: 30%;"></div>
-                            <div class="bar" style="height: 40%;"></div>
-                            <div class="bar" style="height: 60%;"></div>
-                            <div class="bar" style="height: 80%;"></div>
-                            <div class="bar" style="height: 100%;"></div>
-                            <div class="bar" style="height: 60%;"></div>
-                            <div class="bar" style="height: 50%;"></div>
-                            <div class="bar" style="height: 40%;"></div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-    </main>
+{% block admin_content %}
+<div class="content-header">
+    <h1 style="font-size: 1.8rem; margin: 0 0 8px 0; font-weight: 800;">Client Overview</h1>
+    <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">Manage urweb client lifecycles and active deployments.</p>
 </div>
 
-<script>
-    lucide.createIcons();
-</script>
-</body>
-</html>
+<!-- Metrics Row -->
+<div class="metrics-grid">
+    <div class="metric-card">
+        <div class="metric-header">
+            <div class="metric-icon bg-cyan"><i data-lucide="users"></i></div>
+            <div class="metric-badge positive">+12%</div>
+        </div>
+        <div class="metric-label">Active Clients</div>
+        <div class="metric-value">1,284</div>
+    </div>
+    
+    <div class="metric-card">
+        <div class="metric-header">
+            <div class="metric-icon bg-cyan"><i data-lucide="rocket"></i></div>
+            <div class="metric-badge positive">+4.2%</div>
+        </div>
+        <div class="metric-label">Ongoing Projects</div>
+        <div class="metric-value">42</div>
+    </div>
+
+    <div class="metric-card">
+        <div class="metric-header">
+            <div class="metric-icon bg-red"><i data-lucide="life-buoy"></i></div>
+            <div class="metric-badge urgent">8 Urgent</div>
+        </div>
+        <div class="metric-label">Open Tickets</div>
+        <div class="metric-value">12</div>
+    </div>
+</div>
+
+<!-- Two-Column Layout -->
+<div class="dashboard-split-layout">
+    
+    <!-- Left Column -->
+    <div class="dashboard-left">
+        
+        <!-- Project Status Tracker -->
+        <div class="dashboard-panel">
+            <div class="panel-header">
+                <h2 style="font-size: 1.2rem; font-weight: 700; margin: 0;">Project Status Tracker</h2>
+                <a href="{% url 'core:clients' %}" class="view-all">View All Projects</a>
+            </div>
+            
+            <div class="status-table-container">
+                <table class="status-table">
+                    <thead>
+                        <tr>
+                            <th>CLIENT</th>
+                            <th>PIPELINE STATUS</th>
+                            <th>COMPLETION</th>
+                            <th>HEALTH</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Vortex -->
+                        <tr>
+                            <td>
+                                <div class="client-cell">
+                                    <div class="client-logo bg-purple">V</div>
+                                    <div class="client-info">
+                                        <span class="client-name">Vortex Media</span>
+                                        <span class="client-sub">E-commerce Revamp</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="pipeline-status">
+                                    <span class="status-pill active-blue">Development</span>
+                                    <i data-lucide="chevron-right" class="arrow-icon"></i>
+                                    <span class="status-pill inactive">Testing</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="completion-cell">
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar fill-cyan" style="width: 65%;"></div>
+                                    </div>
+                                    <span class="completion-text">65% Completed</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="health-indicator success">
+                                    <i data-lucide="check-circle-2"></i> On Track
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- Solaris -->
+                        <tr>
+                            <td>
+                                <div class="client-cell">
+                                    <div class="client-logo bg-yellow">S</div>
+                                    <div class="client-info">
+                                        <span class="client-name">Solaris Group</span>
+                                        <span class="client-sub">Web App v2</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="pipeline-status">
+                                    <span class="status-pill inactive">Launch</span>
+                                    <i data-lucide="chevron-right" class="arrow-icon"></i>
+                                    <span class="status-pill active-green">Maintenance</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="completion-cell">
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar fill-cyan" style="width: 92%;"></div>
+                                    </div>
+                                    <span class="completion-text">92% Completed</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="health-indicator warning">
+                                    <i data-lucide="alert-triangle"></i> Delayed
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- NexGen -->
+                        <tr>
+                            <td>
+                                <div class="client-cell">
+                                    <div class="client-logo bg-teal">N</div>
+                                    <div class="client-info">
+                                        <span class="client-name">NexGen Inc</span>
+                                        <span class="client-sub">CRM Integration</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="pipeline-status">
+                                    <span class="status-pill active-purple">Consultation</span>
+                                    <i data-lucide="chevron-right" class="arrow-icon"></i>
+                                    <span class="status-pill inactive">Design</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="completion-cell">
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar fill-cyan" style="width: 15%;"></div>
+                                    </div>
+                                    <span class="completion-text">15% Completed</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="health-indicator success">
+                                    <i data-lucide="check-circle-2"></i> On Track
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recent Client Logins -->
+        <div class="dashboard-panel">
+            <div class="panel-header">
+                <h2 style="font-size: 1.2rem; font-weight: 700; margin: 0;">Recent Client Logins</h2>
+                <i data-lucide="more-horizontal" class="more-icon" style="color: var(--text-muted); cursor: pointer;"></i>
+            </div>
+            <div class="logins-grid">
+                <!-- Sarah -->
+                <div class="login-card">
+                    <div class="login-avatar"><i data-lucide="user"></i></div>
+                    <div class="login-details">
+                        <h4>Sarah Jenkins</h4>
+                        <p>Last login: 12m ago &bull; IP: 192.168.1.1</p>
+                    </div>
+                    <a href="#" class="login-link"><i data-lucide="external-link"></i></a>
+                </div>
+                <!-- Michael -->
+                <div class="login-card">
+                    <div class="login-avatar"><i data-lucide="user"></i></div>
+                    <div class="login-details">
+                        <h4>Michael Chen</h4>
+                        <p>Last login: 2h ago &bull; IP: 185.12.92.3</p>
+                    </div>
+                    <a href="#" class="login-link"><i data-lucide="external-link"></i></a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Right Column -->
+    <div class="dashboard-right">
+        
+        <!-- Maintenance Tickets -->
+        <div class="dashboard-panel">
+            <div class="panel-header">
+                <h2 style="font-size: 1.3rem; font-weight: 700; margin: 0;">Maintenance Tickets</h2>
+                <span class="badge bg-red-light danger-text">8 Action Required</span>
+            </div>
+            
+            <div class="ticket-list">
+                <!-- Ticket 1 -->
+                <div class="ticket-item border-red">
+                    <div class="ticket-meta">
+                        <span class="ticket-id">TICKET #492</span>
+                        <span class="ticket-priority red">HIGH PRIORITY</span>
+                    </div>
+                    <h4>Payment Gateway Timeout</h4>
+                    <p>Vortex Media checkout is throwing 504 errors on production.</p>
+                    <div class="ticket-footer">
+                        <div class="ticket-users">
+                            <div class="ticket-avatar" style="background:#fcd34d;"></div>
+                            <div class="ticket-avatar" style="background:#fb923c; margin-left:-10px;"></div>
+                        </div>
+                        <button class="btn-reply">Reply</button>
+                    </div>
+                </div>
+                
+                <!-- Ticket 2 -->
+                <div class="ticket-item border-cyan">
+                    <div class="ticket-meta">
+                        <span class="ticket-id">TICKET #491</span>
+                        <span class="ticket-priority cyan">MEDIUM</span>
+                    </div>
+                    <h4>Update Banner Assets</h4>
+                    <p>Solaris Group requested a homepage hero update for Q4.</p>
+                    <div class="ticket-footer">
+                        <div class="ticket-users">
+                            <div class="ticket-avatar" style="background:#fdba74;"></div>
+                        </div>
+                        <button class="btn-reply">Reply</button>
+                    </div>
+                </div>
+
+                <!-- Ticket 3 -->
+                <div class="ticket-item border-gray">
+                    <div class="ticket-meta">
+                        <span class="ticket-id">TICKET #488</span>
+                        <span class="ticket-priority gray">LOW</span>
+                    </div>
+                    <h4>Color Palette Tweak</h4>
+                    <p>Adjust primary blue to match new branding docs.</p>
+                    <div class="ticket-footer">
+                        <div class="ticket-users">
+                            <div class="ticket-avatar" style="background:#f97316;"></div>
+                        </div>
+                        <button class="btn-reply">Reply</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center" style="margin-top: 15px;">
+                <a href="#" class="view-more-btn">View More Support Cases</a>
+            </div>
+        </div>
+
+        <!-- Client Success Card -->
+        <div class="success-card">
+            <div class="success-header">
+                <i data-lucide="bar-chart-2"></i> Client Success
+            </div>
+            <p>98.2% of your clients are satisfied with current project pace.</p>
+            <div class="chart-bars">
+                <div class="bar" style="height: 30%;"></div>
+                <div class="bar" style="height: 40%;"></div>
+                <div class="bar" style="height: 60%;"></div>
+                <div class="bar" style="height: 80%;"></div>
+                <div class="bar" style="height: 100%;"></div>
+                <div class="bar" style="height: 60%;"></div>
+                <div class="bar" style="height: 50%;"></div>
+                <div class="bar" style="height: 40%;"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
