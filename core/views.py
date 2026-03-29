@@ -85,7 +85,8 @@ def dashboard_view(request):
 
 @login_required
 def clients_view(request):
-    return render(request, 'core/clients.html', {'active_tab': 'clients'})
+    client_form = ClientForm()
+    return render(request, 'core/clients.html', {'active_tab': 'clients', 'client_form': client_form})
 
 @login_required
 def projects_view(request):
