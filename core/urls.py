@@ -15,4 +15,8 @@ urlpatterns = [
     path('dashboard/projects/', views.projects_view, name='projects'),
     path('dashboard/add-client/', views.add_client, name='add_client'),
     path('dashboard/add-project/', views.add_project, name='add_project'),
+    path('dashboard/services/', views.services_manager, name='services_manager'),
+    path('dashboard/services/add/', views.service_add, name='service_add'),
+    path('dashboard/services/<int:pk>/edit/', views.service_edit, name='service_edit'),
+    path('dashboard/services/<int:pk>/delete/', views.service_delete, name='service_delete'),
 ]

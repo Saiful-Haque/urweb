@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
-from .forms import ContactForm, ClientForm, ProjectForm
+from .forms import ContactForm, ClientForm, ProjectForm, ServiceForm
 from .models import Service, Project, Testimonial, Client
 
 # Create your views here.
@@ -122,3 +122,46 @@ def add_project(request):
         else:
             messages.error(request, 'Failed to add project. Please check the form.')
     return redirect('core:projects')
+
+# ─── Services CRUD ──────────────────────────────────────────────
+@login_required
+def services_manager(request):
+    all_services = Service.objects.all().order_by('order')
+    form = ServiceForm()
+    return render(request, 'core/services_manager.html', {
+        'active_tab': 'services',
+        'services': all_services,
+        'form': form,
+    })
+
+@login_required
+def service_add(request):
+    if request.method == 'POST':
+        form = ServiceForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Service added successfully.')
+        else:
+            messages.error(request, 'Failed to add service.')
+    return redirect('core:services_manager')
+
+@login_required
+def service_edit(request, pk):
+    service = get_object_or_404(Service, pk=pk)
+    if request.method == 'POST':
+        form = ServiceForm(request.POST, instance=service)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Service updated successfully.')
+        else:
+            messages.error(request, 'Failed to update service.')
+    return redirect('core:services_manager')
+
+@login_required
+def service_delete(request, pk):
+    service = get_object_or_404(Service, pk=pk)
+    if request.method == 'POST':
+        service.delete()
+        messages.success(request, f'Service "{service.title}" deleted.')
+    return redirect('core:services_manager')
+

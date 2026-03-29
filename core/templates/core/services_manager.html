@@ -1,0 +1,263 @@
+{% extends "core/admin_base.html" %}
+
+{% block title %}Services Manager | urweb{% endblock %}
+
+{% block topbar_action %}
+<button class="btn btn-primary topbar-btn" onclick="openAddModal()">
+    <i data-lucide="plus"></i> Add Service
+</button>
+{% endblock %}
+
+{% block admin_content %}
+
+<!-- Toast Messages -->
+{% if messages %}
+<div id="toast-container" style="position: fixed; top: 24px; right: 32px; z-index: 10000; display: flex; flex-direction: column; gap: 10px;">
+    {% for msg in messages %}
+    <div class="toast-msg toast-{{ msg.tags }}" style="
+        background: {% if 'success' in msg.tags %}#ECFDF5; border-left: 4px solid #10B981; color: #065F46;
+        {% else %}#FEF2F2; border-left: 4px solid #EF4444; color: #991B1B;{% endif %}
+        padding: 14px 20px; border-radius: 10px; font-weight: 600; font-size: 0.9rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1); min-width: 280px;
+        animation: slideInRight 0.3s ease;
+    ">
+        {{ msg }}
+    </div>
+    {% endfor %}
+</div>
+<style>
+@keyframes slideInRight {
+    from { transform: translateX(40px); opacity: 0; }
+    to   { transform: translateX(0); opacity: 1; }
+}
+</style>
+<script>
+setTimeout(() => {
+    const c = document.getElementById('toast-container');
+    if (c) c.style.transition = '0.4s', c.style.opacity = '0', setTimeout(() => c.remove(), 400);
+}, 3500);
+</script>
+{% endif %}
+
+<!-- Header -->
+<div class="content-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px;">
+    <div>
+        <h1 style="font-size: 1.8rem; margin: 0 0 8px 0; font-weight: 800;">Services</h1>
+        <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">Manage the services displayed on your public website.</p>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="background: #E0FDF4; color: #0F766E; font-size: 0.85rem; font-weight: 700; padding: 8px 16px; border-radius: 20px;">
+            {{ services.count }} Service{{ services.count|pluralize }} Total
+        </div>
+    </div>
+</div>
+
+<!-- Services Table -->
+<div class="dashboard-panel" style="padding: 0; overflow: hidden;">
+    <table class="status-table" style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th style="padding: 20px 24px;">ICON</th>
+                <th style="padding: 20px 0;">SERVICE NAME</th>
+                <th style="padding: 20px 0;">DESCRIPTION</th>
+                <th style="padding: 20px 0; text-align: center;">ORDER</th>
+                <th style="padding: 20px 24px 20px 0; text-align: right;">ACTIONS</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for service in services %}
+            <tr style="border-top: 1px solid #F1F5F9;">
+                <td style="padding-left: 24px; width: 72px;">
+                    <div style="width: 44px; height: 44px; background: #E8F4F5; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #0F766E;">
+                        <i data-lucide="{{ service.icon_name }}" style="width: 20px; height: 20px;"></i>
+                    </div>
+                </td>
+                <td style="padding: 20px 0;">
+                    <span style="font-weight: 700; font-size: 0.95rem; color: #1E293B;">{{ service.title }}</span>
+                </td>
+                <td style="padding: 20px 0; max-width: 340px;">
+                    <span style="color: #64748B; font-size: 0.875rem; line-height: 1.5;">
+                        {{ service.description|truncatechars:90 }}
+                    </span>
+                </td>
+                <td style="text-align: center; padding: 20px 0;">
+                    <span style="background: #F1F5F9; color: #475569; border-radius: 6px; padding: 4px 12px; font-weight: 600; font-size: 0.85rem;">
+                        {{ service.order }}
+                    </span>
+                </td>
+                <td style="text-align: right; padding-right: 24px;">
+                    <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                        <!-- Edit Button -->
+                        <button
+                            onclick="openEditModal({{ service.pk }}, '{{ service.title|escapejs }}', `{{ service.description|escapejs }}`, '{{ service.icon_name|escapejs }}', {{ service.order }})"
+                            style="background: #EFF6FF; border: none; color: #2563EB; border-radius: 8px; padding: 7px 14px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s;"
+                            onmouseover="this.style.background='#2563EB'; this.style.color='white';"
+                            onmouseout="this.style.background='#EFF6FF'; this.style.color='#2563EB';"
+                        >
+                            <i data-lucide="pencil" style="width: 14px; height: 14px;"></i> Edit
+                        </button>
+                        <!-- Delete Button -->
+                        <button
+                            onclick="confirmDelete({{ service.pk }}, '{{ service.title|escapejs }}')"
+                            style="background: #FEF2F2; border: none; color: #EF4444; border-radius: 8px; padding: 7px 14px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s;"
+                            onmouseover="this.style.background='#EF4444'; this.style.color='white';"
+                            onmouseout="this.style.background='#FEF2F2'; this.style.color='#EF4444';"
+                        >
+                            <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 60px 24px; color: #94A3B8;">
+                    <i data-lucide="layers" style="width: 40px; height: 40px; margin-bottom: 12px; display: block; margin-left: auto; margin-right: auto;"></i>
+                    No services yet. Click <strong>+ Add Service</strong> to create the first one.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- SaaS Footer -->
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 40px 0 20px 0;">
+    <span style="font-size: 0.85rem; color: #94A3B8;">&copy; 2024 urweb. All rights reserved.</span>
+    <div style="display: flex; gap: 24px;">
+        <a href="#" style="font-size: 0.85rem; color: #94A3B8; text-decoration: none;">Privacy Policy</a>
+        <a href="#" style="font-size: 0.85rem; color: #94A3B8; text-decoration: none;">Terms of Service</a>
+    </div>
+</div>
+
+<!-- ═══════════════ ADD SERVICE MODAL ═══════════════ -->
+<dialog id="addServiceModal" class="admin-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 36px; height: 36px; background: #E8F4F5; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #0F766E;">
+                    <i data-lucide="plus-circle" style="width: 18px; height: 18px;"></i>
+                </div>
+                <h2>Add New Service</h2>
+            </div>
+            <button onclick="document.getElementById('addServiceModal').close()">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+        <form action="{% url 'core:service_add' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-body">
+                {{ form.as_p }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" style="background: white; border: 1px solid #E2E8F0; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;"
+                    onclick="document.getElementById('addServiceModal').close()">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <i data-lucide="save" style="width: 16px; height: 16px;"></i> Save Service
+                </button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+<!-- ═══════════════ EDIT SERVICE MODAL ═══════════════ -->
+<dialog id="editServiceModal" class="admin-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 36px; height: 36px; background: #EFF6FF; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #2563EB;">
+                    <i data-lucide="pencil" style="width: 18px; height: 18px;"></i>
+                </div>
+                <h2>Edit Service</h2>
+            </div>
+            <button onclick="document.getElementById('editServiceModal').close()">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+        <form id="editServiceForm" method="POST">
+            {% csrf_token %}
+            <div class="form-body">
+                <p>
+                    <label>Service Name</label>
+                    <input type="text" name="title" id="edit-title" class="form-control" required>
+                </p>
+                <p>
+                    <label>Description</label>
+                    <textarea name="description" id="edit-description" class="form-control" rows="3"></textarea>
+                </p>
+                <p>
+                    <label>Icon Name <span style="color:#94A3B8; font-weight:400;">(Lucide icon, e.g. code-2)</span></label>
+                    <input type="text" name="icon_name" id="edit-icon" class="form-control">
+                </p>
+                <p>
+                    <label>Display Order</label>
+                    <input type="number" name="order" id="edit-order" class="form-control" min="0">
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" style="background: white; border: 1px solid #E2E8F0; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;"
+                    onclick="document.getElementById('editServiceModal').close()">Cancel</button>
+                <button type="submit" class="btn btn-primary" style="background: #2563EB;">
+                    <i data-lucide="check" style="width: 16px; height: 16px;"></i> Update Service
+                </button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+<!-- ═══════════════ DELETE CONFIRM MODAL ═══════════════ -->
+<dialog id="deleteServiceModal" class="admin-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 36px; height: 36px; background: #FEF2F2; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #EF4444;">
+                    <i data-lucide="alert-triangle" style="width: 18px; height: 18px;"></i>
+                </div>
+                <h2>Delete Service</h2>
+            </div>
+            <button onclick="document.getElementById('deleteServiceModal').close()"><i data-lucide="x"></i></button>
+        </div>
+        <div class="form-body" style="padding-top: 20px;">
+            <p style="color: #475569; font-size: 0.95rem; margin: 0; line-height: 1.6;">
+                Are you sure you want to delete <strong id="delete-service-name" style="color: #EF4444;"></strong>?<br>
+                <span style="color: #94A3B8; font-size: 0.85rem;">This action cannot be undone.</span>
+            </p>
+        </div>
+        <form id="deleteServiceForm" method="POST">
+            {% csrf_token %}
+            <div class="modal-footer">
+                <button type="button" class="btn" style="background: white; border: 1px solid #E2E8F0; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;"
+                    onclick="document.getElementById('deleteServiceModal').close()">Cancel</button>
+                <button type="submit" class="btn" style="background: #EF4444; color: white; padding: 10px 20px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer;">
+                    <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i> Yes, Delete
+                </button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function openAddModal() {
+    document.getElementById('addServiceModal').showModal();
+}
+
+function openEditModal(pk, title, description, icon, order) {
+    document.getElementById('edit-title').value       = title;
+    document.getElementById('edit-description').value = description;
+    document.getElementById('edit-icon').value        = icon;
+    document.getElementById('edit-order').value       = order;
+    document.getElementById('editServiceForm').action = `/dashboard/services/${pk}/edit/`;
+    document.getElementById('editServiceModal').showModal();
+    lucide.createIcons();
+}
+
+function confirmDelete(pk, name) {
+    document.getElementById('delete-service-name').textContent = name;
+    document.getElementById('deleteServiceForm').action = `/dashboard/services/${pk}/delete/`;
+    document.getElementById('deleteServiceModal').showModal();
+    lucide.createIcons();
+}
+</script>
+{% endblock %}

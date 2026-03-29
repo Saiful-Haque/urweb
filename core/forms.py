@@ -1,5 +1,17 @@
 from django import forms
-from .models import ContactMessage, Client, Project
+from .models import ContactMessage, Client, Project, Service
+
+class ServiceForm(forms.ModelForm):
+    class Meta:
+        model = Service
+        fields = ['title', 'description', 'icon_name', 'order']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'required': True, 'placeholder': 'e.g. Web Development'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Brief description of this service...'}),
+            'icon_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "e.g. 'code-2' (Lucide icon name)"}),
+            'order': forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
+        }
+
 
 class ContactForm(forms.ModelForm):
     class Meta:
