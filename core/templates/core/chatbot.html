@@ -1,0 +1,122 @@
+{% load static %}
+<!-- ==================== URWEB AI Chatbot Widget ==================== -->
+
+<!-- Floating Action Button -->
+<button id="chatbot-fab" class="chatbot-fab" aria-label="Open chat">
+    <!-- Chat icon -->
+    <svg class="icon-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <!-- Close icon -->
+    <svg class="icon-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+    <span class="fab-badge"></span>
+</button>
+
+<!-- Chat Window -->
+<div id="chatbot-window" class="chatbot-window" role="dialog" aria-label="URWEB AI chatbot">
+
+    <!-- Header -->
+    <div class="chat-header">
+        <div class="chat-header-avatar">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="10" rx="2"/>
+                <circle cx="12" cy="5" r="2"/>
+                <path d="M12 7v4M8 14v2M16 14v2"/>
+            </svg>
+        </div>
+        <div class="chat-header-info">
+            <span class="chat-header-name">URWEB AI</span>
+            <div class="chat-online-status">
+                <span class="chat-online-dot"></span>
+                Online · Typically replies instantly
+            </div>
+        </div>
+        <button id="chat-close-btn" class="chat-close-btn" aria-label="Close chat">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Messages -->
+    <div id="chat-messages" class="chat-messages">
+        <!-- Initial greeting injected by JS below -->
+    </div>
+
+    <!-- Quick Actions -->
+    <div id="chat-quick-actions" class="chat-quick-actions"></div>
+
+    <!-- Input -->
+    <div class="chat-input-area">
+        <input
+            id="chat-input"
+            class="chat-input"
+            type="text"
+            placeholder="Type a message..."
+            autocomplete="off"
+            maxlength="300"
+        >
+        <button id="chat-send-btn" class="chat-send-btn" aria-label="Send">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <div class="chat-footer-brand">Powered by URWEB AI Ecosystem</div>
+</div>
+
+<!-- Chatbot styles & script -->
+<link rel="stylesheet" href="{% static 'core/css/chatbot.css' %}?v={% now 'U' %}">
+<script src="{% static 'core/js/chatbot.js' %}?v={% now 'U' %}"></script>
+
+<!-- Boot: inject greeting -->
+<script>
+(function() {
+    function boot() {
+        var messages = document.getElementById('chat-messages');
+        var actions  = document.getElementById('chat-quick-actions');
+        if (!messages) return;
+
+        // Greeting bubble
+        var wrapper = document.createElement('div');
+        wrapper.className = 'chat-msg bot';
+
+        var avatar = document.createElement('div');
+        avatar.className = 'msg-avatar';
+        avatar.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2" fill="white"/><circle cx="12" cy="5" r="2" fill="white"/><path d="M12 7v4M8 14v2M16 14v2" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg>';
+
+        var bubble = document.createElement('div');
+        bubble.className = 'msg-bubble';
+        bubble.innerHTML = "Hi there! I'm <strong>URWEB AI</strong>. 👋<br>How can I help you today?";
+
+        wrapper.appendChild(avatar);
+        wrapper.appendChild(bubble);
+        messages.appendChild(wrapper);
+
+        // Default quick actions
+        var defaults = ['Our Services', 'Get a Quote', 'View Portfolio'];
+        defaults.forEach(function(label) {
+            var btn = document.createElement('button');
+            btn.className = 'quick-btn';
+            btn.textContent = label;
+            btn.addEventListener('click', function() {
+                var links = {'Our Services': '/services/', 'Get a Quote': '/contact/', 'View Portfolio': '/portfolio/'};
+                if (links[label]) window.location.href = links[label];
+            });
+            actions.appendChild(btn);
+        });
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+    } else {
+        boot();
+    }
+})();
+</script>
