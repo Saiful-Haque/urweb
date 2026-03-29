@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
@@ -79,11 +80,11 @@ def contact_view(request):
     
     return render(request, 'core/contact.html', {'form': form})
 
-@login_required
+@staff_member_required
 def dashboard_view(request):
     return render(request, 'core/dashboard.html', {'active_tab': 'dashboard'})
 
-@login_required
+@staff_member_required
 def clients_view(request):
     clients = Client.objects.all().order_by('-id')
     client_form = ClientForm()
@@ -93,7 +94,7 @@ def clients_view(request):
         'client_form': client_form
     })
 
-@login_required
+@staff_member_required
 def projects_view(request):
     projects = Project.objects.all().order_by('-id')
     clients = Client.objects.all().order_by('name')
@@ -108,7 +109,7 @@ def projects_view(request):
     }
     return render(request, 'core/projects.html', context)
 
-@login_required
+@staff_member_required
 def add_client(request):
     if request.method == 'POST':
         form = ClientForm(request.POST)
@@ -119,7 +120,7 @@ def add_client(request):
             messages.error(request, 'Failed to add client. Please check the form.')
     return redirect('core:clients')
 
-@login_required
+@staff_member_required
 def edit_client(request, pk):
     client = get_object_or_404(Client, pk=pk)
     if request.method == 'POST':
@@ -131,7 +132,7 @@ def edit_client(request, pk):
             messages.error(request, 'Failed to update client.')
     return redirect('core:clients')
 
-@login_required
+@staff_member_required
 def delete_client(request, pk):
     client = get_object_or_404(Client, pk=pk)
     if request.method == 'POST':
@@ -140,7 +141,7 @@ def delete_client(request, pk):
         messages.success(request, f'Client "{name}" deleted.')
     return redirect('core:clients')
 
-@login_required
+@staff_member_required
 def add_project(request):
     if request.method == 'POST':
         form = ProjectForm(request.POST)
@@ -151,7 +152,7 @@ def add_project(request):
             messages.error(request, 'Failed to add project. Please check the form.')
     return redirect('core:projects')
 
-@login_required
+@staff_member_required
 def edit_project(request, pk):
     project = get_object_or_404(Project, pk=pk)
     if request.method == 'POST':
@@ -163,7 +164,7 @@ def edit_project(request, pk):
             messages.error(request, 'Failed to update project.')
     return redirect('core:projects')
 
-@login_required
+@staff_member_required
 def delete_project(request, pk):
     project = get_object_or_404(Project, pk=pk)
     if request.method == 'POST':
@@ -173,7 +174,7 @@ def delete_project(request, pk):
     return redirect('core:projects')
 
 # ─── Services CRUD ──────────────────────────────────────────────
-@login_required
+@staff_member_required
 def services_manager(request):
     all_services = Service.objects.all().order_by('order')
     form = ServiceForm()
@@ -183,7 +184,7 @@ def services_manager(request):
         'form': form,
     })
 
-@login_required
+@staff_member_required
 def service_add(request):
     if request.method == 'POST':
         form = ServiceForm(request.POST)
@@ -194,7 +195,7 @@ def service_add(request):
             messages.error(request, 'Failed to add service.')
     return redirect('core:services_manager')
 
-@login_required
+@staff_member_required
 def service_edit(request, pk):
     service = get_object_or_404(Service, pk=pk)
     if request.method == 'POST':
@@ -206,7 +207,7 @@ def service_edit(request, pk):
             messages.error(request, 'Failed to update service.')
     return redirect('core:services_manager')
 
-@login_required
+@staff_member_required
 def service_delete(request, pk):
     service = get_object_or_404(Service, pk=pk)
     if request.method == 'POST':
@@ -215,7 +216,7 @@ def service_delete(request, pk):
     return redirect('core:services_manager')
 
 # ─── Portfolio CRUD ──────────────────────────────────────────────
-@login_required
+@staff_member_required
 def portfolio_manager(request):
     items = Project.objects.all().order_by('order')
     form = PortfolioForm()
@@ -225,7 +226,7 @@ def portfolio_manager(request):
         'form': form,
     })
 
-@login_required
+@staff_member_required
 def portfolio_add(request):
     if request.method == 'POST':
         form = PortfolioForm(request.POST)
@@ -236,7 +237,7 @@ def portfolio_add(request):
             messages.error(request, 'Failed to add portfolio item.')
     return redirect('core:portfolio_manager')
 
-@login_required
+@staff_member_required
 def portfolio_edit(request, pk):
     item = get_object_or_404(Project, pk=pk)
     if request.method == 'POST':
@@ -248,7 +249,7 @@ def portfolio_edit(request, pk):
             messages.error(request, 'Failed to update portfolio item.')
     return redirect('core:portfolio_manager')
 
-@login_required
+@staff_member_required
 def portfolio_delete(request, pk):
     item = get_object_or_404(Project, pk=pk)
     if request.method == 'POST':
@@ -258,7 +259,7 @@ def portfolio_delete(request, pk):
     return redirect('core:portfolio_manager')
 
 # ─── Testimonials CRUD ──────────────────────────────────────────
-@login_required
+@staff_member_required
 def testimonials_manager(request):
     all_testimonials = Testimonial.objects.all().order_by('-id')
     form = TestimonialForm()
@@ -268,7 +269,7 @@ def testimonials_manager(request):
         'form': form,
     })
 
-@login_required
+@staff_member_required
 def testimonial_add(request):
     if request.method == 'POST':
         form = TestimonialForm(request.POST)
@@ -279,7 +280,7 @@ def testimonial_add(request):
             messages.error(request, 'Failed to add testimonial.')
     return redirect('core:testimonials_manager')
 
-@login_required
+@staff_member_required
 def testimonial_edit(request, pk):
     testimonial = get_object_or_404(Testimonial, pk=pk)
     if request.method == 'POST':
@@ -291,7 +292,7 @@ def testimonial_edit(request, pk):
             messages.error(request, 'Failed to update testimonial.')
     return redirect('core:testimonials_manager')
 
-@login_required
+@staff_member_required
 def testimonial_delete(request, pk):
     testimonial = get_object_or_404(Testimonial, pk=pk)
     if request.method == 'POST':
@@ -300,7 +301,7 @@ def testimonial_delete(request, pk):
         messages.success(request, f'Testimonial from "{name}" deleted.')
 
 # ─── Contact Messages CRUD ─────────────────────────────────────
-@login_required
+@staff_member_required
 def messages_inbox(request):
     all_messages = ContactMessage.objects.all().order_by('-created_at')
     unread_count = ContactMessage.objects.filter(is_read=False).count()
@@ -310,7 +311,7 @@ def messages_inbox(request):
         'unread_count': unread_count,
     })
 
-@login_required
+@staff_member_required
 def message_toggle_read(request, pk):
     msg = get_object_or_404(ContactMessage, pk=pk)
     if request.method == 'POST':
@@ -320,7 +321,7 @@ def message_toggle_read(request, pk):
         messages.success(request, f'Message from {msg.name} marked as {status}.')
     return redirect('core:messages_inbox')
 
-@login_required
+@staff_member_required
 def message_delete(request, pk):
     msg = get_object_or_404(ContactMessage, pk=pk)
     if request.method == 'POST':
