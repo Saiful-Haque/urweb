@@ -31,4 +31,7 @@ urlpatterns = [
     path('dashboard/testimonials/add/', views.testimonial_add, name='testimonial_add'),
     path('dashboard/testimonials/<int:pk>/edit/', views.testimonial_edit, name='testimonial_edit'),
     path('dashboard/testimonials/<int:pk>/delete/', views.testimonial_delete, name='testimonial_delete'),
+    path('dashboard/messages/', views.messages_inbox, name='messages_inbox'),
+    path('dashboard/messages/<int:pk>/toggle-read/', views.message_toggle_read, name='message_toggle_read'),
+    path('dashboard/messages/<int:pk>/delete/', views.message_delete, name='message_delete'),
 ]

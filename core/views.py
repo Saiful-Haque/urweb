@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
 from .forms import ContactForm, ClientForm, ProjectForm, ServiceForm, PortfolioForm, TestimonialForm
-from .models import Service, Project, Testimonial, Client
+from .models import Service, Project, Testimonial, Client, ContactMessage
 
 # Create your views here.
 def home(request):
@@ -298,4 +298,33 @@ def testimonial_delete(request, pk):
         name = testimonial.client_name
         testimonial.delete()
         messages.success(request, f'Testimonial from "{name}" deleted.')
-    return redirect('core:testimonials_manager')
+
+# ─── Contact Messages CRUD ─────────────────────────────────────
+@login_required
+def messages_inbox(request):
+    all_messages = ContactMessage.objects.all().order_by('-created_at')
+    unread_count = ContactMessage.objects.filter(is_read=False).count()
+    return render(request, 'core/messages_inbox.html', {
+        'active_tab': 'messages',
+        'contact_messages': all_messages,
+        'unread_count': unread_count,
+    })
+
+@login_required
+def message_toggle_read(request, pk):
+    msg = get_object_or_404(ContactMessage, pk=pk)
+    if request.method == 'POST':
+        msg.is_read = not msg.is_read
+        msg.save()
+        status = "read" if msg.is_read else "unread"
+        messages.success(request, f'Message from {msg.name} marked as {status}.')
+    return redirect('core:messages_inbox')
+
+@login_required
+def message_delete(request, pk):
+    msg = get_object_or_404(ContactMessage, pk=pk)
+    if request.method == 'POST':
+        name = msg.name
+        msg.delete()
+        messages.success(request, f'Message from "{name}" deleted.')
+    return redirect('core:messages_inbox')

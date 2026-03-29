@@ -1,0 +1,176 @@
+{% extends "core/admin_base.html" %}
+
+{% block title %}Inbox | urweb{% endblock %}
+
+{% block admin_content %}
+
+<!-- Toast Messages -->
+{% if messages %}
+<div id="toast-container" style="position: fixed; top: 24px; right: 32px; z-index: 10000; display: flex; flex-direction: column; gap: 10px;">
+    {% for msg in messages %}
+    <div style="
+        background: {% if 'success' in msg.tags %}#ECFDF5; border-left: 4px solid #10B981; color: #065F46;
+        {% else %}#FEF2F2; border-left: 4px solid #EF4444; color: #991B1B;{% endif %}
+        padding: 14px 20px; border-radius: 10px; font-weight: 600; font-size: 0.9rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1); min-width: 280px;
+        animation: slideInRight 0.3s ease;">{{ msg }}</div>
+    {% endfor %}
+</div>
+<style>@keyframes slideInRight { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }</style>
+<script>setTimeout(() => { const c = document.getElementById('toast-container'); if (c) c.style.transition = '0.4s', c.style.opacity = '0', setTimeout(() => c.remove(), 400); }, 3500);</script>
+{% endif %}
+
+<div class="content-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px;">
+    <div>
+        <h1 style="font-size: 1.8rem; margin: 0 0 8px 0; font-weight: 800;">Contact Inbox</h1>
+        <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">Manage incoming leads and ethereal inquiries.</p>
+    </div>
+    <div style="background: #F1F5F9; padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; gap: 8px; font-weight: 700; color: #475569; font-size: 0.85rem;">
+        <i data-lucide="mail-warning" style="width: 18px; height: 18px; color: #2563EB;"></i>
+        {{ unread_count }} Unread
+    </div>
+</div>
+
+<!-- Messages List -->
+<div class="dashboard-panel" style="padding: 0; overflow: hidden; background: white;">
+    <div class="status-table-container">
+        <table class="status-table" style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #F8FAFC;">
+                    <th style="padding: 20px 24px; text-align: left; font-size: 0.75rem; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em; width: 20%;">SENDER</th>
+                    <th style="padding: 20px 0; text-align: left; font-size: 0.75rem; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em; width: 45%;">SUBJECT & MESSAGE</th>
+                    <th style="padding: 20px 0; text-align: left; font-size: 0.75rem; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em; width: 15%;">DATE</th>
+                    <th style="padding: 20px 24px; text-align: right; font-size: 0.75rem; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em;">ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for msg in contact_messages %}
+                <tr style="border-top: 1px solid #F1F5F9; {% if not msg.is_read %}background: #F0F9FF;{% endif %} transition: background 0.2s;">
+                    <td style="padding: 20px 24px;">
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <span style="font-weight: 700; color: #1E293B; font-size: 0.9rem;">{{ msg.name }}</span>
+                            <span style="color: #64748B; font-size: 0.75rem; display: flex; align-items: center; gap: 4px;">
+                                <i data-lucide="mail" style="width: 12px; height: 12px;"></i> {{ msg.email }}
+                            </span>
+                        </div>
+                    </td>
+                    <td style="padding: 20px 0;">
+                        <div style="cursor: pointer;" onclick="viewMessage('{{ msg.name|escapejs }}', '{{ msg.email|escapejs }}', '{{ msg.subject|escapejs }}', '{{ msg.message|escapejs }}', '{{ msg.created_at|date:'F d, Y H:i' }}')">
+                            <span style="font-weight: 700; color: #1E293B; display: block; margin-bottom: 4px; font-size: 0.9rem;">{{ msg.subject }}</span>
+                            <p style="color: #64748B; margin: 0; font-size: 0.85rem; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4;">
+                                {{ msg.message }}
+                            </p>
+                        </div>
+                    </td>
+                    <td style="padding: 20px 0;">
+                        <span style="color: #94A3B8; font-size: 0.8rem; font-weight: 500;">{{ msg.created_at|date:"M d, Y" }}</span>
+                    </td>
+                    <td style="padding: 20px 24px; text-align: right;">
+                        <div style="display: flex; gap: 10px; justify-content: flex-end; align-items: center;">
+                            <form action="{% url 'core:message_toggle_read' msg.pk %}" method="POST" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" title="Mark as {% if msg.is_read %}unread{% else %}read{% endif %}"
+                                    style="background: none; border: none; color: {% if msg.is_read %}#94A3B8{% else %}#2563EB{% endif %}; cursor: pointer; padding: 4px;">
+                                    <i data-lucide="{% if msg.is_read %}mail-open{% else %}mail{% endif %}" style="width: 20px; height: 20px;"></i>
+                                </button>
+                            </form>
+                            <button onclick="confirmDeleteMessage({{ msg.pk }}, '{{ msg.name|escapejs }}')" 
+                                style="background: none; border: none; color: #F87171; cursor: pointer; padding: 4px;" title="Delete Message">
+                                <i data-lucide="trash-2" style="width: 20px; height: 20px;"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 80px 24px; color: #94A3B8;">
+                         <i data-lucide="inbox" style="width: 48px; height: 48px; display: block; margin: 0 auto 16px; opacity: 0.3;"></i>
+                         Inbox is empty. When clients reach out, their messages will appear here.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ═══════ MESSAGE DETAIL MODAL ═══════ -->
+<dialog id="messageDetailModal" class="admin-modal" style="max-width: 600px;">
+    <div class="modal-content" style="padding: 0;">
+        <div class="modal-header" style="padding: 24px; border-bottom: 1px solid #F1F5F9;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 40px; height: 40px; background: #F0F9FF; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #0EA5E9;">
+                    <i data-lucide="user" style="width: 20px; height: 20px;"></i>
+                </div>
+                <div>
+                    <h2 id="modal-msg-name" style="font-size: 1.1rem; margin: 0;"></h2>
+                    <p id="modal-msg-email" style="color: #64748B; font-size: 0.8rem; margin: 0;"></p>
+                </div>
+            </div>
+            <button onclick="document.getElementById('messageDetailModal').close()"><i data-lucide="x"></i></button>
+        </div>
+        <div class="form-body" style="padding: 30px 40px;">
+             <div style="margin-bottom: 24px;">
+                 <span style="font-size: 0.7rem; color: #94A3B8; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Subject</span>
+                 <p id="modal-msg-subject" style="font-weight: 700; color: #1E293B; font-size: 1rem; margin: 0;"></p>
+             </div>
+             <div>
+                 <span style="font-size: 0.7rem; color: #94A3B8; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 8px;">Message Content</span>
+                 <div id="modal-msg-content" style="color: #475569; font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap;"></div>
+             </div>
+             <div style="margin-top: 30px; padding-top: 20px; border-top: 1px dashed #E2E8F0; display: flex; justify-content: space-between; align-items: center;">
+                 <span id="modal-msg-date" style="color: #94A3B8; font-size: 0.75rem;"></span>
+                 <a id="modal-reply-btn" href="#" style="background: #2563EB; color: white; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                     <i data-lucide="reply" style="width: 14px; height: 14px;"></i> Reply via Email
+                 </a>
+             </div>
+        </div>
+    </div>
+</dialog>
+
+<!-- ═══════ DELETE MESSAGE MODAL ═══════ -->
+<dialog id="deleteMessageModal" class="admin-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 36px; height: 36px; background: #FEF2F2; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #EF4444;">
+                    <i data-lucide="alert-triangle" style="width: 18px; height: 18px;"></i>
+                </div>
+                <h2>Delete Inquiry</h2>
+            </div>
+            <button onclick="document.getElementById('deleteMessageModal').close()"><i data-lucide="x"></i></button>
+        </div>
+        <div class="form-body" style="padding: 20px 0;">
+            <p style="color: #475569; margin: 0; line-height: 1.6;"> Are you sure you want to delete the message from <strong id="delete-msg-name" style="color: #EF4444;"></strong>? This action is permanent.</p>
+        </div>
+        <form id="deleteMessageForm" method="POST">
+            {% csrf_token %}
+            <div class="modal-footer">
+                <button type="button" class="btn" onclick="document.getElementById('deleteMessageModal').close()">Cancel</button>
+                <button type="submit" class="btn" style="background: #EF4444; color: white; border: none;">Delete Permanently</button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function viewMessage(name, email, subject, content, date) {
+    document.getElementById('modal-msg-name').textContent = name;
+    document.getElementById('modal-msg-email').textContent = email;
+    document.getElementById('modal-msg-subject').textContent = subject;
+    document.getElementById('modal-msg-content').textContent = content;
+    document.getElementById('modal-msg-date').textContent = 'Received on ' + date;
+    document.getElementById('modal-reply-btn').href = `mailto:${email}?subject=Re: ${subject}`;
+    document.getElementById('messageDetailModal').showModal();
+}
+
+function confirmDeleteMessage(pk, name) {
+    document.getElementById('delete-msg-name').textContent = name;
+    document.getElementById('deleteMessageForm').action = `/dashboard/messages/${pk}/delete/`;
+    document.getElementById('deleteMessageModal').showModal();
+}
+</script>
+{% endblock %}
